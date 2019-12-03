@@ -1,0 +1,20 @@
+
+
+1º Montar imagen a partir de dockerfile, si se descarga ubuntu ver las capas que se descarga, si ubuntu saca actualizacion no se descargará todo solo las capas que han sido actualizadas
+	>docker image buid -t imagen5 .
+
+2º Una vez montada volver a montarla exactamente igual, se verá como el proceso ahora no tarda nada y lo que se genera son las mismas id de capa que en la anterior
+
+	>docker image buid -t imagen5 .
+
+3º Meter un cambio en dockerfile (modificar un RUN) por ejemplo, ahora se verá como ese paso si se ejecuta y el id de la capa cambia y a partir de esa capa todas las siguientes también vuelven a generarse puesto que la capa "Padre" ya no es la misma
+
+	Comentar #RUN apt-get install -y python-pip python-dev en dockerfile
+	>docker image buid -t imagen5 .
+
+
+4º Ahora esto ocurriria igual a la hora de hacer pull o push, si se descarga ubuntu ver las capas que se descarga, si ubuntu saca actualizacion no se descargará todo solo las capas que han sido actualizadas
+
+
+5º Ahora meter un cambio en el fichero que se copia, se verá que a partir de ese punto deja de usar la caché y ejecutará los pasos que vengan a continuacion
+

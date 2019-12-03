@@ -1,0 +1,120 @@
+1. Instalamos Docker si no lo estuviera
+
+2. Habilitar docker
+sudo systemctl enable docker
+
+3. Install Kubernetes
+
+At this stage we are ready to install Kubernetes. Once again we need to install Kubernetes on all nodes. Execute the below command on all nodes (master & slave) to install Kubernetes: 
+
+Agregamos la clave de firma de Kubernetes:
+	 
+	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+
+
+
+A continuación, agregamos el repositorio de Kubernetes e instalamos Kubernetes
+	sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+	sudo apt install kubeadm 
+
+
+Kubernetes se negará a funcionar si el sistema usa memoria de intercambio (swap memory), por lo tanto, necesitamos desactivar la memoria de intercambio en todos sus nodos (maestro y esclavo):
+	sudo swapoff -a
+
+
+sudo hostnamectl set-hostname manager01
+sudo hostnamectl set-hostname worker01
+sudo hostnamectl set-hostname worker02
+
+	
+Ahora estamos listos para inicializar el nodo maestro de Kubernetes. Para ello, ejecute el siguiente comando de Linux en su nodo maestro:
+	sudo kubeadm init --pod-network-cidr=192.168.1.101/16
+Al finalizar nos devuelve una instrucción que deberemos guardar para ejecutar posteriormente en los nodos esclavos
+
+
+kubeadm join 192.168.1.101:6443 --token ov8t5m.7vr106v3mm8bqnux --discovery-token-ca-cert-hash sha256:ca88b7866bd4064f40ecb582a3ced19f815ece632f899a2677d3184dcb4a388a
+
+
+
+A continuación, es obligatorio ejecutar los siguientes comandos como usuario regular para comenzar a usar el clúster de Kubernetes
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+El siguiente paso es desplegar una red de pod. La red de pod se usa para la comunicación entre nodos dentro del clúster Kubernetes.
+El comando kubectl apply -f nos permitirá descargarnos de una url una serie de contenedores para virtualizar en nuestros caso usaremo la red de pod de Flannel aunque hay otros muchos como puede ser weave-net:
+	kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+	
+Se crea un daemonset
+
+Con comando kubectl para confirmar que todo está listo, vemos los pods que se han creado
+	kubectl get pods --all-namespaces
+
+Por defecto y al contrario de lo que ocurria en SWARM, en Kubernetes el nodo master no ejecuta pods 
+	
+Unir esclavos al cluster Kubernetes
+=======================================================================================================
+Ejecutar el comando kubeadm join recuperado anteriormente de la salida de inicialización del nodo maestro en todos los nodos esclavos para unirse a su grupo de Kubernetes:
+	kubeadm join 192.168.1.101:6443 --token rk690s.obek3wjakf0liucf --discovery-token-ca-cert-hash sha256:eef4ad013181f232b488f77b23b0eafd98a669c2f4c60792adbf8048e0e4bcf4
+	
+	
+En el nodo maestro de Kubernetes, confirmamos que el nodo kubernetes-slave ahora forma parte de nuestro clúster de Kubernetes:
+	kubectl get nodes
+
+
+Desplegando un servicio en un cluster Kubernetes
+=========================================================================
+Como prueba de concepto, ahora implementaremos un servidor Nginx en nuestro nuevo clúster Kubernetes.
+Ejecutamos los siguientes dos comandos en el nodo maestro:
+	
+	kubectl run nginx-server --image=nginx --replicas=2 --port=80 
+
+De forma predeterminada, los contenedores solo son visibles para otros miembros del clúster. Para exponer su servicio , ejecute:
+
+	kubectl expose deployment nginx-server --port=8080 --name=nginx-http --type=NodePort
+
+OK, ahora está expuesto, pero ¿dónde? Utilizamos el tipo NodePort, lo que significa que la IP externa es solo la IP del nodo en el que se está ejecutando, como puede ver si obtiene una lista de servicios:
+
+	>kubectl get svc
+
+pero eso no nos dice cuál es el número de puerto real. Para conseguir eso, podemos describir el servicio real en sí:
+	>kubectl describe services nginx-http
+	
+	Name:              nginx-http
+	Namespace:         default
+	Labels:            run=nginx-server
+	Annotations:       <none>
+	Selector:          run=nginx-server
+	Type:              ClusterIP
+	IP:                10.106.35.124
+	Port:              <unset>  8080/TCP
+	TargetPort:        8080/TCP
+	Endpoints:         192.168.2.2:8080
+	Session Affinity:  None
+	Events:            <none>
+
+	>kubectl get endpoints
+	
+POr tanto a partir de su endpoint podría acceder
+	curl http://192.168.2.2:8080
+	
+El problema aquí es que, de forma predeterminada, este puerto está cerrado, bloqueado por el grupo de seguridad predeterminado.
+	curl -I http://192.168.1.101:8080
+	
+Ahora se debería ver un nuevo contenedor nginx docker desplegado en el nodo esclavo al hacer
+	docker ps
+	
+Para ver info
+	kubectl cluster-info
+	
+	
+Para confirmar que el nuevo servicio Nginx está en funcionamiento, enumere todos los servicios disponibles en su nodo maestro 
+	kubectl get svc
+	
+y use el comando curl para realizar una solicitud HTTP en su CLUSTER IP:
+	curl -I 10.110.188.117
+
+
+

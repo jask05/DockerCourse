@@ -1,0 +1,16 @@
+#ELiminar Imagenes
+docker image rm imagen
+docker image rm -f imagen
+
+# ayuda para salvar imágenes
+docker image save --help
+
+# ayuda para cargar imágenes
+docker image load --help
+
+#1º guardamos la imagen
+docker image save --output fichero_generado imagen:label
+docker save alpine:latest > miImagen.tar
+
+>docker image rm imagen:label
+>docker image load -i miImagen.tar

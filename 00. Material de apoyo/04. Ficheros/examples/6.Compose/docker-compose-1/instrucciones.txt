@@ -1,0 +1,15 @@
+Ejecutar 
+
+>docker-compose up -d# -d para que no muestre los logs de los contenedores
+#Vemos los contenedores creados y las imagenes
+>docker-compose ps
+
+>docker-compose images
+
+#Modificamos el fichero counter.py, añado algo en el html
+>docker-compose up -d
+
+#Vemos que no pasa nada, al ejecutar el comando up solo la primera vez ejecuta el build y el pull de las imagenes, para que lo haga tenemos que forzarle
+
+>docker-compose up -d --build
+#Ahora si se verá como recrea la imagen web y coge los cambios

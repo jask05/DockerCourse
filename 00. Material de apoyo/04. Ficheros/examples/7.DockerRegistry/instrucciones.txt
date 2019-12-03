@@ -1,0 +1,42 @@
+mkdir examples/7.DockerRegistry/registro
+
+En examples/7.DockerRegistry/ ejecutar
+
+docker-compose up -d
+				
+>docker info
+Vamos a Insecure Registries, aparecen todos los regsitros inseguros con los que va a trabajar debe aparecer el nuestro
+
+
+Accedemos al fichero 
+	>sudo vim /etc/docker/daemon.json
+	{
+		"insecure-registries":["192.168.1.102:5007docker"]
+	}
+
+Reiniciamos el servicio de docker
+	sudo service docker restart
+
+>docker info
+Vamos a Insecure Registries, aparecen todos los regsitros y ya esta el nuestro
+
+
+Ahora probamos a subir una imagen
+
+	docker image tag busybox 192.168.1.102:5007/busybox
+
+	docker push 192.168.1.102:5007/busybox
+
+Como sabemos si se ha subido bien, incorporamos interfaz web. 
+Si buscamos en google "docker registry frontend" --> konradkleine/docker-registry-frontend - Docker Hub
+https://hub.docker.com/r/konradkleine/docker-registry-frontend/
+
+
+cambiamos  docker-compose_last.yml a docker-compose.yml
+
+>docker-compose up -d --build
+
+
+
+
+

@@ -1,0 +1,16 @@
+Ejemplo1 Volumenes:
+Se va a usar un directorio en la máquina local que se usara como volumen en dos contenedores
+===========================================================================================================
+#Ejecutar, y entramos en la máquina, ver que la carpeta se ha generado en el contenedor y esta el fichero
+docker run --name ubuntu_vol1 -v ~/examples/5.Volumenes/Volumen1:/ejemplos -it ubuntu_vim /bin/bash 
+
+docker run --name ubuntu_vol2 -v ~/examples/5.Volumenes/Volumen1:/ejemplos -it ubuntu_vim /bin/bash 
+
+#Desde otra consola ver que contenedores están operativos, tiene que aparecer ubuntu_vol1 y ubuntu_vol2
+docker ps
+
+#Vemos el fichero desde el contenedor, lo modificamos y vemos que desde el host también ha cambiado (sería necesario instalar vim)
+
+#Hacemos lo mismo al reves, modificamos desde el host y vemos el cambio en el contenedor
+
+#Se borra el contenedor y se ve que el fichero sigue existiendo y con el último valor

@@ -1,0 +1,18 @@
+# ayuda de docker
+docker --help | more
+
+>docker info
+
+>docker version
+
+# ayuda del módulo sistema de docker
+docker system --help
+
+# información del sistema en docker
+docker system info
+
+# información de los recursos de docker
+docker system df
+
+docker container --help
+docker container run --help

@@ -1,0 +1,14 @@
+Ejercicio 3
+=============================
+#Se pueden descomprimir o no
+#gunzip imagen.tar.gz
+
+a) 	docker image load -i imagen.tar.gz 
+				y 
+	docker load -i imagen2.tar.gz
+b) docker image ls
+c) docker run -d --name myubuntu mongo:4.1 
+d) 	docker container logs --details myubuntu
+	docker container logs --follow myubuntu
+	
+e) docker container stop myubuntu

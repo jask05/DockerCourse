@@ -1,0 +1,11 @@
+docker run --name mynginx -d -p 80:80 nginx
+http://localhost:80/
+
+docker run --name mynginx2 -d -p 8081:80 nginx
+http://localhost:8081/
+
+#Listar solo activos
+docker ps o docker container ls
+
+#Listar todos
+docker ps -a o docker container ls -a

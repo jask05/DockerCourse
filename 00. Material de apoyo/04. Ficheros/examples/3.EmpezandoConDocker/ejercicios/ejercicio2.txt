@@ -1,0 +1,15 @@
+Ejercicio 2
+=============================
+
+a)docker run -it --name myBusyBox alpine:latest sh
+>cd /sbin/ #vemos el fichero ldconfig
+
+b) docker ps / docker container ls
+
+#Mantener abierta la ventana anterior. En otra ventana 
+c)>docker stats myBusyBox
+#hacer la copia del fichero
+d)docker cp myBusyBox:/sbin/ldconfig ./
+#Guardarimagen
+e)docker save alpine:latest > imagen_busybox.tar
+f)docker inspect --format='{{.NetworkSettings.IPAddress}}' myBusyBox

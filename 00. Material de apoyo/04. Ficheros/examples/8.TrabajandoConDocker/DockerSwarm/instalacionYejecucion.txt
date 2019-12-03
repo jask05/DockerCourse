@@ -1,0 +1,43 @@
+vi /etc/hosts
+
+192.168.1.101 manager01
+192.168.1.102 worker01
+192.168.1.103 worker02
+
+
+
+2. docker swarm init --advertise-addr 192.168.1.101
+Al finalizar devuelve: docker swarm join --token SWMTKN-1-5d9cp5o41gjp4eoj94d5beqzj60dz40hsef05q6kty7dm0479w-c742nhucmwa0zzrjhgh2znxf7 192.168.1.101:2377
+
+
+3. Este paso solo lo ejecutaremos en los servidores “worker1” y “worker2”, y sirve para agregarlos al cluster Swarm:
+		
+
+	
+4. Este paso es opcional, nos permitirá ver desde una interfaz web nuestros nodos, contenedores, servicios, … 
+Lo ejecutaremos en “manager01”:
+
+apt install unzip
+
+wget https://github.com/dockersamples/docker-swarm-visualizer/archive/master.zip
+
+mv docker-swarm-visualizer-master examples
+
+docker run -it -d -p 5010:8080 -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
+
+5.Ahora que ya tenemos todo listo, vamos a crear nuestro servicio de Nginx con 3 réplicas:
+
+	docker service create --name mi-web --publish 8080:80 nginx
+	docker service scale mi-web=3
+
+6.Visualización --> http://192.168.1.101:5010/
+
+Comprobamos los nodos que pertenecen al cluster, volviendo a ejecutar docker node ls en el manager
+docker node ls
+Comprobamos el listado de servicios que se están ejecutando
+docker service ls
+Inspeccionamos el servicio creado con el comando docker service inspect –pretty <SERVICE-ID>
+Para ver en que nodo se están ejecutando los contenedores asociados al servicio ejecutamos docker service ps <SERVICE-ID>. Recordar que por defecto el nodomanager también trabaja como worker
+Para borrar el servicio  
+docker service rm <SERVICE-ID>
+

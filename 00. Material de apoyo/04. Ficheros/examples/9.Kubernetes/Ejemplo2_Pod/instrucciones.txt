@@ -1,0 +1,139 @@
+LEvantamos una aplicacion donde levantar un contenedor, vamos a usar un deployment para 
+
+Creación de un pod
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: rss-site
+ labels:
+   app: web
+spec:
+ containers:
+   – name: front-end
+     image: nginx
+     ports:
+       – containerPort: 80
+   – name: rss-reader
+     image: nickchase/rss-php-nginx:v1
+     ports:
+       – containerPort: 88
+
+comenzamos con la versión API; aquí es sólo v1. (Cuando veamos los deployments, tendremos que especificar una versión diferente porque los deployments no existen en v1).
+
+A continuación, estamos especificando que queremos crear un Pod; en su lugar, podríamos especificar un Deployment, Job, Service, etc., dependiendo de lo que intentemos lograr.
+
+A continuación especificamos los metadatos. Aquí estamos especificando el nombre del Pod, así como la etiqueta que usaremos para identificar el pod para Kubernetes.
+
+Finalmente, especificaremos los objetos reales que conforman el pod. 
+La propiedad "spec" de especificación incluye todos los contenedores, volúmenes de almacenamiento u otras piezas que Kubernetes debe conocer, así como propiedades como si reiniciar el contenedor si falla. Puede encontrar una lista completa de las propiedades de Kubernetes Pod https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#_v1_podspec en la especificación de la API de Kubernetes https://kubernetes.io/docs/concepts/overview/kubernetes-api/, pero echemos un vistazo más de cerca a una definición de contenedor típica:
+
+
+...
+ spec:
+   containers:
+     - name: front-end
+       image: nginx
+       ports:
+         - containerPort: 80
+     - name: rss-reader
+ ...
+
+
+En este caso, tenemos una definición simple y bastante mínima: un nombre (front-end), la imagen en la que se basa (nginx) y un puerto en el que el contenedor escuchará internamente (80). De estos, solo se requiere el nombre, pero en general, si desea que haga algo útil, necesitará más información.
+
+También puede especificar propiedades más complejas, como un comando que se ejecute cuando se inicie el contenedor, los argumentos que debe usar, un directorio de trabajo o si se debe extraer una nueva copia de la imagen cada vez que se crea una instancia. También puede especificar información aún más profunda, como la ubicación del registro de salida del contenedor. Aquí están las propiedades que puede establecer para un contenedor:
+
+
+=====================================
+Creando el pod usando el archivo YAML
+=====================================
+El primer paso, por supuesto, es seguir adelante y crear un archivo de texto. Llámelo pod.yaml y agregue el siguiente texto, tal como lo especificamos anteriormente:
+
+apiVersion: v1
+ kind: Pod
+ metadata:
+   name: rss-site
+   labels:
+     app: web
+ spec:
+   containers:
+     - name: front-end
+       image: nginx
+       ports:
+         - containerPort: 80
+     - name: rss-reader
+       image: nickchase/rss-php-nginx:v1
+       ports:
+         - containerPort: 88
+		 
+Guarda el archivo y dile a Kubernetes que cree su contenido:
+
+> kubectl create -f pod.yaml
+pod "rss-site" created
+
+Como se puede ver, K8 hace referencia al nombre que le dimos al Pod. Puedes ver que si pides una lista de los pods:
+>kubectl get pods
+
+Si se verifica con suficiente antelación, puede ver que el pod aún se está creando. Después de unos segundos, debería ver los contenedores ejecutándose:
+
+En este caso como no hay replica solo está en uno
+
+para obtener más informacion como en que nodo se ha desplegado
+	>kubectl describe pod rss-site
+	
+==========================================================
+Creando un Deployment usando YAML
+==========================================================
+Finalmente, hemos terminado con la creación de la implementación real. Sin embargo, antes de hacerlo, vale la pena entender qué es lo que realmente estamos haciendo.
+
+K8, recuerda, gestiona los recursos basados en contenedores. En el caso de un Deployment, se está creando un conjunto de recursos para ser administrado. Por ejemplo, cuando creamos una instancia única del Pod en el ejemplo anterior, podríamos crear una Implementación para decirle a Kubernetes que administre un conjunto de réplicas de ese Pod, literalmente, un ReplicaSet, para asegurarnos de que un cierto número de ellas siempre disponible. Entonces podríamos comenzar nuestra definición de Implementación de esta manera:
+
+---
+ apiVersion: extensions/v1beta1
+ kind: Deployment
+ metadata:
+   name: rss-site
+ spec:
+   replicas: 2
+   
+   
+  Aquí estamos especificando la apiVersion como extensiones / v1beta1 - recuerde, los deployments no están en la v1, como lo fueron los Pods. A continuación especificamos el nombre. También podemos especificar cualquier otro metadato que queramos, pero seamos sencillos por ahora.
+  
+  
+  
+ apiVersion: extensions/v1beta1
+ kind: Deployment
+ metadata:
+   name: rss-site-deploy
+ spec:
+   replicas: 2
+   template:
+     metadata:
+       labels:
+         app: web
+     spec:
+       containers:
+         - name: front-end-dep
+           image: nginx
+           ports:
+             - containerPort: 8086
+         - name: rss-reader-dep
+           image: nickchase/rss-php-nginx:v1
+           ports:
+             - containerPort: 8087
+			 
+			 
+Finalmente, entramos en la "especificación". En la especificación del Pod, proporcionamos información sobre lo que realmente entró en el Pod; Haremos lo mismo aquí con la implementación. Comenzaremos, en este caso, diciendo que independientemente de los Pods que implementemos, siempre queremos tener 2 réplicas. Por supuesto, puede establecer este número como desee, y también puede configurar propiedades como el selector que define los Pods afectados por esta Implementación, o el número mínimo de segundos que un Pod debe estar arriba sin ningún error antes de que se considere "listo"
+
+
+Ahora vamos a seguir adelante y crear el despliegue. Agregue el YAML a un archivo llamado deploy.yaml y apunte a Kubernetes hacia él:
+>kubectl create -f deployment.yaml
+
+>kubectl get deployments
+Como puede ver, Kubernetes ha iniciado ambas réplicas, pero solo una está disponible. Puede verificar el registro de eventos describiendo la implementación, como antes:
+
+
+> kubectl describe deployment rss-site-deploy
+
+  

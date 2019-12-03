@@ -1,0 +1,13 @@
+#Un desarrollador sin saber nada ni elementos necesarios como bases de datos o servidores que hicieran falta podría ejecutarlo simplemente sin la necesidad de instalar nada
+
+>docker-compose up -d
+Ejecutar 
+>docker-compose run --rm test# El rm es para borrar el contenedor una vez que se ha creado
+
+
+>docker-compose ps
+Ver los 3 contenedores y ver como el de test esta parado por el --rm
+
+>docker-compose ps --services
+Me da los nombres de los servicios
+

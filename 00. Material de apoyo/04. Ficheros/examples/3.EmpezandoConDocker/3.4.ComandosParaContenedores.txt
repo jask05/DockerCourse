@@ -1,0 +1,84 @@
+Arrancar contenedores
+======================================================================================
+>docker container run –help
+
+>docker run alpine echo "hello from alpine" #Una imagen mínima de Docker basada en Alpine Linux con un índice de paquete completo y solo 5 MB de tamaño
+Alpine Linux es una distribución Linux ligera y segura
+
+>docker container run centos:7 ls –ltr /
+>docker container run centos:6 ls -ltr
+
+>docker container run ubuntu top –b
+
+#Hace que los procesos se ejecuten en segundo plano y me muestre solo un id único del contenedor
+>docker container run -detach ubuntu top –b 
+>docker container run -d ubuntu top -b
+
+#Para ver los logs que se estan generando
+>docker container logs --details <nombre_contenedor> #muestra datos de ese momento y no sigue mostrando
+>docker container logs --follow <nombre_contenedor> #Para obtenerlos de forma cte
+
+
+RESUMEN
+========================================================================
+docker run alpine echo "hello from alpine" #Una imagen mínima de Docker basada en Alpine Linux con un índice de paquete completo y solo 5 MB de tamaño
+
+docker run busybox ls -ltr / #BusyBox imagen que combina pequeñas versiones de muchas utilidades comunes de UNIX en un solo ejecutable pequeño de entre 1 y 5MB dependiendo de la version.
+
+Detalles de los contenedores
+========================================================================
+#Muestra json con detalles del contenedor, podemos ver entre otros datos configuracion de red, nombre, o Se pueden ver variables de entorno usadas en el contenedor
+
+docker inspect mynginx 
+
+#Muestra valor de una determinada variable
+>docker inspect --format='{{.Name}}' mynginx
+
+#Muestra valor de una determinada variable
+docker inspect --format='{{.NetworkSettings.SandboxKey}}' mynginx
+
+
+Parar y arrancar contenedores
+=========================================================================
+
+>docker container stop contenedor (se para pero no se borra)
+
+>docker container start contenedor, vuelve a arrancarlo si estaba parado
+
+#Se pueden detener varios contenedores a la vez
+
+>docker container stop `docker container ls -q` #lista todos los ids de los contenedores y los borra
+
+Eliminar contenedores
+=========================================================================
+>docker container rm contenedor
+>docker container rm –f borra contenedor aunque no este parado
+>Docker container rm –v contenedor#borra el contenedor y sus volúmenes (en ocasiones la info se almacena en volúmenes para que aunque se borre el contenedor la información persista, como por ejemplo lo datos de una bbdd)
+
+
+Ejecutar comandos en contenedores
+=========================================================================
+#Sobre uno que este activo
+docker exec contenedor ls 
+docker exec contenedor mkdir mydir# Ojo crea el directorio solo en ese contenedor, ni la imagen ni los otros contenedores que partan de esa imagen lo tendran 	 
+
+docker exec -it <contenedor_ubuntu> sh #activa Shell dentro del contenedor y es como si estuviera dentro de él y podremos ejecutar comandos dentro
+#Creamos directorio: mkdir dir1 
+#Creamos fichero dentro de ese directorio: cat>fichero2.txt
+
+Copiar ficheros del contenedor a local
+=========================================================================
+#Copio el fichero que acabo de crear a mi máquina local
+docker cp contenedor:/mydir/fichero_creado.txt ./
+
+#Por ejemplo de el de nginx
+docker cp contenedor:/sbin/tune2fs ./
+
+
+Estadisticas
+==========================================================================
+
+docker stats contenedor
+#Sirve para borrar, se usa en local nunca en prod, borra contenedores parados, redes y volúmenes que no se usen
+docker system prune
+

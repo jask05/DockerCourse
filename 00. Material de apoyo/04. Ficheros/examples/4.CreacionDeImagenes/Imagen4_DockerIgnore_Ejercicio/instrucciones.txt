@@ -1,0 +1,4 @@
+#Se genera la imangen
+docker image build --tag ejemplo6 .
+#Se ejecuta contenedor y entramos a ver lo que se ha metido en la imagen
+docker container run -it ejemplo6 bash

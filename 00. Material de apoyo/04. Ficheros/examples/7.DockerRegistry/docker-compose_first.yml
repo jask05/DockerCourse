@@ -1,0 +1,9 @@
+version: "3.2"
+services:
+  registry:
+    restart: always
+    image: registry:2
+    ports: 
+      - 5007:5000
+    volumes:
+      - ./registro:/var/lib/registry

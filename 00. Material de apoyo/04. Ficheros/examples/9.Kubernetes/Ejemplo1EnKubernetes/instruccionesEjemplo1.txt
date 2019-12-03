@@ -1,0 +1,11 @@
+Para saber versión
+	kubectl version --short
+
+ejecutar 
+	>kubectl apply -f ejemplo1.yml
+Crea ejemplo1
+
+#Desplegamos la imagen
+	>kubectl describe deployment ejemplo1
+	
+Aparece lo que ha creado, nombre, replicas, tipos de estrategia, PodTemplates con los datos del contenedor

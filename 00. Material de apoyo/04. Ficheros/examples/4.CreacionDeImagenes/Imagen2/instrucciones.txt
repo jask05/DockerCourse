@@ -1,0 +1,21 @@
+#Generar imagen primero con ENTRY_POINT comentado
+docker image build --tag ejemplo2 .
+docker container run -id --name miejemplo2 ejemplo2
+
+docker exec miejemplo2 ls /examples
+
+#Para ver el valor de la variable de entorno
+docker container run -it --name miejemplo2_0 ejemplo2 bash
+echo $VARIABLE1
+
+#Generar imagen con ENTRY_POINT descomentado
+docker container run --name miejemplo2_1 ejemplo2#Si se ejecuta con detach no muestra la salida del entrypoint
+
+
+#También podemos modificar las instrucciones por defecto del entrypoint
+docker container run --name miejemplo2_2 --entrypoint "bin/ls" ejemplo2 #Solo lista
+docker container run --name miejemplo2_3 --entrypoint "bin/ls" ejemplo2 -ltr
+docker container run -it --name miejemplo2_4 -e VARIABLE1='VALOR MODIFICADO' ejemplo2 bash
+#Podemos configurar varias variables de entorno en un fichero
+docker run --env-file ./my_env
+

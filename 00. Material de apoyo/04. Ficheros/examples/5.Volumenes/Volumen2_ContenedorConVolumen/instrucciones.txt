@@ -1,0 +1,30 @@
+Ejemplo2:
+Se va a crear un contenedor con un volumen compartido a su vez con otros contenedores
+===========================================================================================================
+#Creamos contenedor a partir de la imagen busybox (programa que combina muchas utilidades estándares de Unix en un solo ejecutable pequeño) que en nuestro caso lo usaremos como almacenamiento
+docker container run -v /logs --name volumen_logs  busybox
+
+#Ir a /var/lib/docker y listar >sudo ls -ltr ./volumes se ve como se ha creado un nuevo volumen
+
+#Se crea el contenedor pero esta parado
+
+#Si no esta insatlado ubuntu_vim
+
+#Iniciamos otro contenedor que iniciara con el contenedor anterior como volumen de datos
+docker container run -it --name myApp1 --volumes-from volumen_logs ubuntu_vim /bin/bash
+
+#Ver que tenemos el directorio logs que se corresponde al contenedor anterior
+
+#Creamos algún fichero en el directorio logs con touch o vim
+
+Con ctrl-PQ salimos de la máquina en vez de usar exit para no pararla, para volver a entrar a ese contenedor docker container attach myApp1
+
+docker container run -it --name myApp2 --volumes-from volumen_logs ubuntu_vim /bin/bash
+ 
+#Creamos otro fichero
+
+docker container attach myApp1#Como el contenedor esta arrancado entramos en el
+
+#Para visualizar los datos de los ficheros que se han ido creando
+sudo more ./volumes/d0a40d242d563904008211d641136b3ba2f1f739f4b0c2c1c132cfb9a744627b/_data/app2.log
+

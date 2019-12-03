@@ -1,0 +1,6 @@
+ejecutar 
+	docker-compose up -docker-compose
+
+probar
+	
+	localhost:8000
