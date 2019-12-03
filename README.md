@@ -98,6 +98,52 @@
 
 ## 2. Instalación
 
+### 2.1 Docker en los distintos sistemas operativos
+
+![Docker en los distintos Sistemas Operativos](Images/2.1_docker_ssoo_01.png)
+
+![Docker en los distintos Sistemas Operativos II](Images/2.1_docker_ssoo_02.png)
+
+### 2.2 Instalar Docker en Linux
+- Guía de instalación: https://docs.docker.com/install/
+- Máquina virtual
+    - **Usuario**: Ubuntu_1804
+    - **Contraseña:** password
+- Instalación (seguir web)
+```bash
+sudo apt-get update
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt-get update
+sudo apt-get install docker-ce
+```
+
+- Probar funcionamiento
+    - **Run** ejecuta el contenedor listado a continuación del comando.
+```bash
+sudo docker run hello-world
+```
+
+- Añadir al usuario para que no utilice sudo
+```bash
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+### 2.3 Primer Contenedor
+```bash
+docker run hello-world
+```
+
 ## 3. Empezando con Docker
 
 ## 4. Creación de imágenes
