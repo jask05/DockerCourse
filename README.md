@@ -231,11 +231,54 @@ $ docker container run -d --name ubu ubuntu top -b
 $ docker container logs --details 09af5050365f
 ## Muestra los logs en tiempo real (follow)
 $ docker container logs -f 09af5050365f
+
+# Detalles del contenedor
+$ docker inspect nombreContenedor 
+
+## Ir a una propiedad en concreto
+$ docker inspect --format='{{.Name}}' infallible_rubin
+$ docker inspect --format='{{.NetworkSettings.SandboxKey}}' infallible_rubin
 ```
 
 ### 3.5 Empezando con Docker - Ejercicio 1
+1. Descargar imagen de Nginx en su última versión.
+2. Ejecutar el contenedor en *segundo plano* para poder acceder al servidor por el puerto 80 en el navegador.
+3. Acceder desde un navegador a http://localhost
+4. Ejecutar otro contenedor para poder acceder por el puerto **8081** en el navegador.
+5. Listar los contenedores activos.
+
+**Respuesta**
+```bash
+# 1
+$ docker container pull nginx
+
+# 2
+# -p80:80 significa que el puerto 80 de docker (segundo valor) se expone en el puerto 80 (primer valor) del anfitrión.
+$ docker run -d -p80:80 --name nginx80 nginx
+$ docker run -d -p8085:80 --name nginx80 nginx
+
+# Cambiar el fichero default
+$ docker cp /home/ubuntu/index.html nginx80:/usr/share/nginx/html/index2.html
+
+# 4
+$ docker run -d -p8081:80 --name nginx8081 nginx
+
+# 5
+$ docker container list
+
+```
 
 ### 3.6 Resumen
+- Imagen Alpine
+    - Basada en Alpine Linux.
+
+```bash
+$ docker container run alpine echo "Hola mundo!"
+
+# Múltiples utilidades de poco peso
+$ docker container run busybox ls -l
+```
+
 
 ### 3.7 Comandos para imágenes
 
