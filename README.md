@@ -146,6 +146,103 @@ docker run hello-world
 
 ## 3. Empezando con Docker
 
+### 3.1 Comandos Docker
+- Docker asigna nombres aleatorios a los contenedores (si no le asignados uno antes).
+- Ayuda
+    - Están agrupados por funcionalidades.
+```bash
+$ docker help
+$ docker COMMAND --help
+$ docker container --help
+$ docker container ls
+$ docker container ls --help
+$ docker rm zealous_golick
+$ docker image --help
+$ docker image ls -a
+$ docker image rm hello-world -f
+$ docker version
+$ docker search ubuntu
+```
+
+### 3.2 Imágenes y contenedores
+- **Imagen**
+    - Conjunto de ficheros que contiene todos los elementos necesarios para que la imagen pueda ser ejecutada.
+    - NO tienen estado.
+    - NUNCA cambian, son fijas, siempre. NO se pueden modificar.
+    - Cada vez que se ejecuta un **docker run** de una imagen, se genera un nuevo contenedor.
+    - Se pueden ejecutar varios contenedores de la misma imagen.
+    - "Plantilla base"
+- **Contenedor**
+    - Instancia en ejecución de una imagen.
+    - SI tiene estados (arrancado, pausado, detenido o terminado) y se puede modificar (añadir ficheros, por ej).
+    - Se puede modificar su contenido e información estando en ejecución.
+    - "Ejecución de la plantilla".
+- **Comandos**
+    - Imágenes
+        - **Pull**: bajar la imagen.
+        - **Push**: se genera imagen y se sube.
+        - **Build**: crear imágenes.
+        - **Save**: guardar imagen.
+        - **Load**: cargar imagen guardada.
+    - Contenedores
+        - **Run**
+        - **Stop**
+        - **Start**
+        - **Restart**
+        - **Inspect**
+        - **Stats**
+
+![Imágenes y contenedores](Images/3.2_imagenes_contenedores_01.png)
+
+### 3.3 Docker Store - Docker Hub
+- Las imágenes se descargan de:
+    - Docker Store
+    - Docker Hub
+
+```bash
+# Descarga una versión específica de Ubuntu
+$ docker pull ubuntu:16.04 
+```
+
+### 3.4 Comandos para contenedores
+```bash
+$ docker ps -a # Se está deprecando, mejor usar ls
+
+# Lista de directorio raíz todos los ficheros y directorios.
+$ docker container run ubuntu ls -ltr 
+
+# Lo mismo que el anterior pero de la versión anterior de UBuntu
+$ docker container run ubuntu:16.04 ls -ltr
+
+# Cambiar nombre (NAMES) por el que se escoja
+$ docker container run --name miubuntu ubuntu:16.04 ls -ltr
+
+# Ejecutar contenedor y dejarlo arrancado
+$ docker container run --name ultimoubuntu ubuntu top -b
+
+# Detener el contenedor que se está ejecutando
+$ docker container stop 1506bd3b402b
+
+# Ejecutar contenedor y dejarlo arrancado en segundo plano (detach)
+$ docker container run -d --name ubu ubuntu top -b
+
+# Ver logs que genera el contenedor
+## Muestra los logs hasta el momento de ejecutar el comando
+$ docker container logs --details 09af5050365f
+## Muestra los logs en tiempo real (follow)
+$ docker container logs -f 09af5050365f
+```
+
+### 3.5 Empezando con Docker - Ejercicio 1
+
+### 3.6 Resumen
+
+### 3.7 Comandos para imágenes
+
+### 3.8 Empezando con Docker - Ejercicio 2
+
+### 3.9 Empezando con Docker - Ejercicio 3
+
 ## 4. Creación de imágenes
 
 ## 5. Manejando volúmenes
