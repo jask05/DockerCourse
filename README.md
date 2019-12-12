@@ -226,6 +226,9 @@ $ docker container stop 1506bd3b402b
 # Ejecutar contenedor y dejarlo arrancado en segundo plano (detach)
 $ docker container run -d --name ubu ubuntu top -b
 
+# Arranca una máquina con la que se puede ejecutar comandos en Bash
+$ docker container run -it ubuntu:16.04 bash
+
 # Ver logs que genera el contenedor
 ## Muestra los logs hasta el momento de ejecutar el comando
 $ docker container logs --details 09af5050365f
@@ -238,6 +241,38 @@ $ docker inspect nombreContenedor
 ## Ir a una propiedad en concreto
 $ docker inspect --format='{{.Name}}' infallible_rubin
 $ docker inspect --format='{{.NetworkSettings.SandboxKey}}' infallible_rubin
+
+# Se para pero no se borra
+# Se pueden parar varios a la vez
+$ docker stop <contenedor>
+
+# Arranca un contenedor parado
+$ docker start <contenedor>
+
+# Lista todos los IDs de los contenedores y los borra
+#  -q, --quiet           Only display numeric IDs
+$ docker container stop `docker container ls -q`
+$ docker container stop $(docker container ls -q)
+
+# Borra un contenedor (o varios)
+#   -f  Borra un contenedor aunque no esté parado
+#   -v  Borra el contenedor y sus volúmenes
+$ docker container rm <contenedor>
+$ docker container rm `docker container ls -qa`
+$ docker container rm $(docker container ls -qa)
+
+# Ejecuta comandos dentro del contenedor
+$ docker exec <contenedor> ls -ltr
+
+# Activa shell dentro del contenedor y es como si estuvieras dentro de él. Se podrán ejecutar comandos dentro de este.
+#   -i, --interactive   Keep STDIN open even if not attached
+#   -t, --tty           Allocate a pseudo-TTY
+# Utilizando "exit" se mantiene la sesión corriendo
+# 
+$ docker exec -it <contenedor> sh 
+
+# Copiar ficheros del contenedor local
+$ docker cp <contenedor>:/sbin/tune2fs ./
 ```
 
 ### 3.5 Empezando con Docker - Ejercicio 1
@@ -278,7 +313,6 @@ $ docker container run alpine echo "Hola mundo!"
 # Múltiples utilidades de poco peso
 $ docker container run busybox ls -l
 ```
-
 
 ### 3.7 Comandos para imágenes
 
