@@ -273,6 +273,20 @@ $ docker exec -it <contenedor> sh
 
 # Copiar ficheros del contenedor local
 $ docker cp <contenedor>:/sbin/tune2fs ./
+
+# Estadísticas
+$ docker stats <contenedor>
+```
+**Contenedor arrancado** 
+![Comandos para contenedores - Stats](Images/3.4_comandos_contenedores_stats.png)
+
+**Contenedor detenido**
+![Comandos para contenedores - Stats (contenedor detenido)](Images/3.4_comandos_contenedores_stats_02.png)
+
+```bash
+# Borra contenedores parados, imágenes y volúmenes que no se utilizan.
+# NO USAR EN PRODUCCIÓN
+$ docker system prune
 ```
 
 ### 3.5 Empezando con Docker - Ejercicio 1
@@ -315,6 +329,31 @@ $ docker container run busybox ls -l
 ```
 
 ### 3.7 Comandos para imágenes
+```bash
+# Listado de imágenes
+#   -q      Devuelve únicamente los IDs de todas las imágenes.
+$ docker images
+
+# Ayuda para salvar imágenes
+$ docker image save --help
+$ docker image save --output <fichero> <imagen:label>
+$ docker image save --output fichero_imagen_alpine alpine
+# Guarda la imagen comprimida en .tar
+$ docker image save  alpine > miAlpine.tar
+
+# Elimina imagen
+#   -f      Fuerza eliminación
+$ docker image rm <imagen:label>
+# Elimina TODAS las imágenes descargadas.
+$ docker image rm `docker image ls -q` 
+
+# Carga imagen
+#   -i      Carga imágenes comprimidas en .tar
+$ docker image load --help
+$ docker image load <fichero>
+# Carga una imagen comprimida en .tar
+$ docker image load -i miAlpine.tar
+```
 
 ### 3.8 Empezando con Docker - Ejercicio 2
 
