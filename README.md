@@ -264,7 +264,8 @@ $ docker container rm $(docker container ls -qa)
 # Ejecuta comandos dentro del contenedor
 $ docker exec <contenedor> ls -ltr
 
-# Activa shell dentro del contenedor y es como si estuvieras dentro de él. Se podrán ejecutar comandos dentro de este.
+# Activa shell dentro del contenedor y es como si estuvieras dentro de él. 
+# Se podrán ejecutar comandos dentro de este.
 #   -i, --interactive   Keep STDIN open even if not attached
 #   -t, --tty           Allocate a pseudo-TTY
 # Utilizando "exit" se mantiene la sesión corriendo
@@ -314,7 +315,6 @@ $ docker run -d -p8081:80 --name nginx8081 nginx
 
 # 5
 $ docker container list
-
 ```
 
 ### 3.6 Resumen
@@ -356,6 +356,47 @@ $ docker image load -i miAlpine.tar
 ```
 
 ### 3.8 Empezando con Docker - Ejercicio 2
+1. Ejecuta el contenedor de la última versión de la imagen busybox asignando el nombre "muBusyBox" al contenedor creado en modo shell.
+2. Listar todos los contenedores activos.
+3. Mostrar estadísticas del contenedor myBusyBox.
+4. Hacer copia de un fichero a local.
+5. Guardar la imagen en un fichero con nombre **imagen_busybox.tar** para poder transportarla.
+6. Borrar la imagen descargada.
+7. Obtener la IP asignada al contenedor.
+
+**Respuesta**
+```bash
+# 1
+$ docker pull busybox
+$ docker run --name myBusyBox -it busybox sh
+# ctrl + p + q 
+
+# 2
+$ docker ps
+$ docker container attach myBusyBox
+
+# 3
+$ docker stats myBusyBox
+
+# 4
+$ docker container cp myBusyBox:/etc/hosts ~/
+
+# 5
+$ docker image save busybox > ~/imagen_busybox.tar
+
+# 6
+$ docker container rm `docker container ls -qa`
+$ docker image rm busybox
+
+# 7
+$ docker inspect myBusyBox
+$ docker inspect --format='{{.NetworkSettings.IPAddress}}' myBusyBox
+
+# Alternativa si está arrancada
+$ docker pull busybox
+$ docker run --name myBusyBox busybox ifconfig # 172.17.0.2
+
+```
 
 ### 3.9 Empezando con Docker - Ejercicio 3
 
