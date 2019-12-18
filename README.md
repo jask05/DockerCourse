@@ -399,6 +399,31 @@ $ docker run --name myBusyBox busybox ifconfig # 172.17.0.2
 ```
 
 ### 3.9 Empezando con Docker - Ejercicio 3
+1. De la carpeta /examples/3.EmpezandoConDocker/ cargar las imágenes imagen1.tar.gz e imagen2.tar.gz
+2. Obtener el nombre y la versión de cada una de las imágenes.
+3. Arrancar en modo *detach* la imagen 2 y ver los logs que va generando.
+4. Parar el contenedor de la imagen 2.
+
+**Respuesta**
+```bash
+# 1
+$ gzip -d imagen.tar.gz
+$ docker image load -i imagen.tar
+$ gzip -d image2.tar.gz
+$ docker image load -i imagen2.tar
+
+# 2
+$ docker image inspect --format='{{.RepoTags}},{{.DockerVersion}}' alpine
+$ docker image inspect --format='{{.RepoTags}},{{.DockerVersion}}' mongo:4.1
+
+# 3
+$ docker container run -d mongo:4.1
+$ docker container logs -f f4769a9d1f2d
+$ docker container logs --details f4769a9d1f2d
+
+# 4
+$ docker container stop f4769a9d1f2d
+```
 
 ## 4. Creación de imágenes
 
