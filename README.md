@@ -407,10 +407,10 @@ $ docker run --name myBusyBox busybox ifconfig # 172.17.0.2
 **Respuesta**
 ```bash
 # 1
-$ gzip -d imagen.tar.gz
-$ docker image load -i imagen.tar
-$ gzip -d image2.tar.gz
-$ docker image load -i imagen2.tar
+$ gzip -d imagen.tar.gz # Opcional, se puede cargar con el tar.gz
+$ docker image load -i imagen.tar #.gz
+$ gzip -d image2.tar.gz # Opcional, se puede cargar con el tar.gz
+$ docker image load -i imagen2.tar #.gz
 
 # 2
 $ docker image inspect --format='{{.RepoTags}},{{.DockerVersion}}' alpine
@@ -426,6 +426,67 @@ $ docker container stop f4769a9d1f2d
 ```
 
 ## 4. Creación de imágenes
+
+### 4.1 Arquitectura de imágenes
+- Cada imagen está compuesta por una capas.
+- Cada capa representa un cambio importante dentro del sistema de ficheros del contenedor.
+- Se pueden compartir entre distintas imágenes.
+- Una imagen es una especia de snaptshop/captura creado a partir de distintas capas.
+- Las imágenes se basan en un sistema de archivos de capas que ofrecen ventajas y beneficios: ligerios, compartir partes comunes que muchos contenedores pueden desplegar y ejecutar en la misma máquina.
+- **NO** se pueden modificar las capas de una imagen. Solo se pueden ver.
+    - El contenedor de esa imagen es quien crea la capa superior, se superpone sobre la capa de la imagen y sobre esta **si** se tendrán permisos de escritura.
+- Docker gestiona todo el tema de las capas mediante un **storage driver**. 
+    - Controlador de almacenamiento de Docker que maneja los detalles sobre la forma en que están estas capas e interactúan entre si. 
+    - Hay diferentes tipos de controladores disponibles: Overlay2 (default), Auxs, etc.
+- Varios contenedores pueden compartir el acceso a la misma imagen pero tener su propio estado independiente. 
+
+![Capas - Imagen de Ubuntu 15.04](Images/4.1_capas_01.png)
+![Capas y Contenedor - Imagen de Ubuntu 15.04 + Contenedor](Images/4.1_capas_02.png)
+![Capas y Contenedor - Imagen y contenedores](Images/4.1_capas_03.png)
+
+### 4.2 Crear la primera imagen
+- **Contexto**: directorio de donde se coge toda la información (ficheros de configuración, los que se quieren añadir a la imagen, etc.)
+- Directorio raíz
+    - Carpetas y ficheros
+    - Dockerfile
+    - .dockerignore
+
+```bash
+$ docker image build [-t <tag>] <contexto>
+```
+
+### 4.3 Qué es Dockerfile?
+- Archivo de texto plano que contienes las intrucciones; pasos que se han de ejecutar para que la imagen funcione correctamente.
+- Instrucciones necesarias para automatizar la creación de una imagen que se usará posteriormente para la ejecución de instancias específicas.
+- Instrucciones que se le pasan
+    - A partir de qué imagen (Ubuntu, Alpine, Busybox, etc) se va a crear la imagen.
+    - Comando para ejecutar en la imagen: teniendo la imagen base, se añadirán nuevas capas con instrucciones que se vayan generando.
+    - Archivos para incluir en la carpeta del proyecto. 
+    - Dependencias y/o programas.
+    - Puertos abiertos.
+    - Comandos para ejecutar cuando se inicia la imagen.
+
+```bash
+$ cd Imagen1
+$ cat Dockerfile 
+#Establecemos imagen base
+FROM ubuntu:18.04 # Imagen de la que se parte para crear la nueva
+#Comando para indicar al contenedor que comando ejecutar cuando arranque
+ENTRYPOINT echo "Hola Mundo desde imagen de Docker"
+
+$ docker image build -t holamundo_ubuntu .
+```
+
+![Dockerfile - Ejemplo](Images/4.3_dockerfile_01.png)
+
+
+### 4.4 Instrucciones en Dockerfile
+
+### 4.5 Subir y descargar imágenes en Docker Hub
+
+### 4.6 Caché de Docker
+
+### 4.7 Buenas prácticas
 
 ## 5. Manejando volúmenes
 
