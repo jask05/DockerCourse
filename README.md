@@ -465,6 +465,9 @@ $ docker image build [-t <tag>] <contexto>
     - Dependencias y/o programas.
     - Puertos abiertos.
     - Comandos para ejecutar cuando se inicia la imagen.
+- El ID que se le asigna a la última capa va a ser el ID de la imagen general.
+- El **ENTRYPOINT** es lo que se ejecuta al lanzar la imagen.
+- El comando **docker image history** muestra el histórico de una imagen (las capas que componen una imagen).
 
 ```bash
 $ cd Imagen1
@@ -478,11 +481,66 @@ $ docker image build -t holamundo_ubuntu .
 ```
 
 ![Dockerfile - Ejemplo](Images/4.3_dockerfile_01.png)
-
+![Dockerfile - ID de la primera capa](Images/4.3_dockerfile_02.png)
+![Dockerfile - ID de la primera capa](Images/4.3_dockerfile_03.png)
+![Dockerfile - ID de la primera capa](Images/4.3_dockerfile_04.png)
 
 ### 4.4 Instrucciones en Dockerfile
 
+- Instrucciones
+    - FROM
+    - **CMD**: especifica el comando a ejecutar cuando se inicia el contenedor. Se puede inhabilitar las opciones dadas al ejecutar **docker run**.
+    - **ADD**: permite añadir ficheros.
+    - **COPY**: permite copiar ficheros.
+    - VOLUME
+    - **WORKDIR**: posicionarse dentro de un directorio donde se ejecutarán comandos cuando se genera la imagen. Es similar a un *change directory*.
+        - Se puede reemplazar el directorio de trabajo en tiempo de ejecución con el parámetro **-w**.
+    - USER
+    - **LABEL**: sirve para etiquetar las imágenes.
+    - STOPSIGNAL
+    - ARG
+    - **ENV**: variables de entorno.
+    - **RUN**: ejecuta los comandos en la capa superior, generará una nueva capa. Es mejor ejecutar todos los runs de una para no crear nuevas capas por cada ejecución.
+    - ONBUILD
+    - **EXPOSE**: expone puertos de cara a la máquina local poder hacer uso de estos.
+    - **ENTRYPOINT**: comando a ejecutar cuando se arranque el contenedor.
+
+- [Dockerfile best practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+
+![Ejemplo instrucciones Dockerfile 01](Images/4.4_instrucciones_01.png)
+![Ejemplo instrucciones Dockerfile 02](Images/4.4_instrucciones_02.png)
+![Etiqueta Label](Images/4.4_instrucciones_03.png)
+![Etiqueta Workdir](Images/4.4_instrucciones_04.png)
+![Etiqueta Workdir, reemplazo directorio de trabajo](Images/4.4_instrucciones_04_workdir.png)
+![Etiqueta ENV](Images/4.4_instrucciones_05.png)
+![Etiqueta ADD](Images/4.4_instrucciones_06.png)
+![Etiqueta COPY](Images/4.4_instrucciones_07.png)
+![Etiqueta EXPOSE](Images/4.4_instrucciones_08.png)
+![Ejemplo instrucciones Dockerfile 03](Images/4.4_instrucciones_09.png)
+![Ejemplo instrucciones Dockerfile 04](Images/4.4_instrucciones_10.png)
+
+### 4.4 Ejercicio
+
+![Ejercicio](Images/4.4_ejercicio_01.png)
+
+```bash
+$ cat Dockerfile 
+FROM ubuntu:18.04
+LABEL author="Jask" version="0.1" description="Primer ejercicio"
+
+COPY carpeta examples
+COPY fichero.txt examples/
+
+$ cat .dockerignore 
+carpeta/carpeta2
+carpeta/*.png
+
+$ docker image build -t ejercicio1 .
+$ docker container run -ti ejercicio1 bash
+```
+
 ### 4.5 Subir y descargar imágenes en Docker Hub
+
 
 ### 4.6 Caché de Docker
 
