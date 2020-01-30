@@ -523,6 +523,7 @@ $ docker image build -t holamundo_ubuntu .
 
 ![Ejercicio](Images/4.4_ejercicio_01.png)
 
+**Solución**
 ```bash
 $ cat Dockerfile 
 FROM ubuntu:18.04
@@ -541,12 +542,71 @@ $ docker container run -ti ejercicio1 bash
 
 ### 4.5 Subir y descargar imágenes en Docker Hub
 
+- Hay un sistema jerárquico para almacenar imágenes
+    - [Registro](https://hub.docker.com/)
+    - Repositorio
+    - Imagen
+    - Etiqueta
+```bash
+# Conexión a DockerHub
+$ docker login
+
+# Etiqueta imagen para subirla
+$ docker tag <nombre-imagen> <id-usuario>/<nombre-imagen>
+
+# Subir imagen
+$ docker push <id-usuario>/<nombre-imagen>
+
+# Descargar imagen
+$ docker pull <id-usuario>/<nombre-imagen>
+```
 
 ### 4.6 Caché de Docker
 
-### 4.7 Buenas prácticas
+- La caché afecta a operaciones de **build**, **pull** y **push**.
+- En la creación de imágenes, Docker ejecuta las intrucciones en el Dockerfile y busca cada capa en caché (si existe) para ver si la puede reutilizar. 
+    - Para instrucciones ADD y COPY, el contenido de archivos son examinados (checksum).
+    - Si hay modificación en esos ficheros se vuelven a comprobar y añadir.
+    - Estas compilaciones se crean y destruyen en el disco, por eso es importante la caché.
+- Si los objetos en el sistema de archivos no cambia entre compilaciones, la caché ahorra tiempo. 
+    - Esto hace que construir un nuevo contenedor sea bastante rápido. 
+    - No se tienen que crear ni destruir ninguna estructura de archivos ya que no ha habido modificación.
+- No siempre se requiere usar la caché
+    - **-no-cache** al crear la imagen, hacer un **push** o **pull**.
+
+![Caché](Images/4.6_cache_01.png)
+![Cuando se utiliza la caché](Images/4.6_cache_02.png)
+![Cuando se modifica el Dockerfile a partir de una línea](Images/4.6_cache_03.png)
+
+### 4.7 Buenas prácticas (Dockerfile)
+
+1. Optimizar instrucciones
+    - Usar el menor nº posible.
+    - Encadenar comandos en la misma instrucción.
+2. NO instalar paquetes innecesarios.
+3. Ordenar argumentos de varias líneas.
+4. Minimizar el contenido a lo estrictamente necesario. Utilizar Dockerignore.
+5. Un solo proceso por contenedor.
+
+![Optimizar instrucciones](Images/4.7_buenas_practicas_01.png)
+![Ordenar argumentos](Images/4.7_buenas_practicas_02.png)
 
 ## 5. Manejando volúmenes
+
+### 5.1 Introducción
+- Permite compartir ficheros entre host-contenedor o contenedor-contenedor.
+- Usa espacio en el equipo local: **/var/lib/docker/volumes**.
+    - Se podrán seguir accediendo a los ficheros a pesar de que el contenedor esté parado.
+- Características de los volúmenes
+    - **Independiente de las imágenes**: solo se crean cuando se crea un contenedor. Cuando se monta una imagen **no** se especifica el volumen al crear, solo cuando se crean los contenedores.
+    - **Reutilizados**: lo pueden usar varios contenedores.
+    - **Modificaciones visibles**: los cambios se ven de manera automática en todos los contenedores.
+    - **Información persistente**: no se elimina al eliminar el contenedor.
+    - **Rendimiento**: mejora el I/O al disco local, más rápido manejando ficheros. 
+
+### 5.2 Tipos de Volúmenes
+
+### 5.3 Trabajando con Volúmenes
 
 ## 6. Aplicaciones multicontenedor - Docker compose
 
