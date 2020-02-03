@@ -605,10 +605,122 @@ $ docker pull <id-usuario>/<nombre-imagen>
     - **Rendimiento**: mejora el I/O al disco local, más rápido manejando ficheros. 
 
 ### 5.2 Tipos de Volúmenes
+- **Volúmenes de datos**: disco que se acopla dentro de un contenedor. Se crea un contenedor con un volumen y ese mismo contenedor se va a utilizar cuando se arranque otro contenedor para almacenar datos.
+- **Volúmenes de host**: directorio de la máquina compartido con el contenedor.
 
 ### 5.3 Trabajando con Volúmenes
+```bash
+# Volúmenes de datos
+$ docker run -v /directorio contenedor:versión
+# Se crea el volumen de un contenedor
+$ docker container run -v /logs --name volumen_logs busybox 
+# Se usa el volumen creado anteriormente para un nuevo contenedor
+$ docker container run -it --name myApp1 --volumes-from volumen_logs ubuntu_vim bash
+
+# Volúmenes de host
+$ docker run -v ~/directorio_local:/directorio_contenedor contenedor:versión
+$ docker run --name ubuntu_vol1 -v ~/Documents/DockerCourse/Volumen1:/ejemplos -it ubuntu_vim bash
+
+# Comprobar configuración de volúmenes
+$ docker inspect <volúmen>
+```
+
+![Volúmenes de datos](Images/5.2_tipos_volumenes_01.png)
+![Volúmenes de datos](Images/5.2_tipos_volumenes_02.png)
 
 ## 6. Aplicaciones multicontenedor - Docker compose
+
+### 6.1 ¿Qué es Docker Compose?
+- Herramienta para definir y correr aplicaciones multicontenedores.
+- Bueno para integración continua.
+- Archivo de Compose.
+    - Los **contenedores** se denominan **servicios**.
+
+### 6.2 Instalando Docker Compose
+- [Instalación](https://github.com/docker/compose/install/)
+
+```bash
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.25.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+$ sudo chmod +x /usr/local/bin/docker-compose
+
+$ docker-compose --version
+```
+
+### 6.3 Creando fichero Compose
+- Preparando el fichero de despliegue
+    - Fichero con extensión **.yml**: **docker-compose.yml**
+    - **version**: tener en cuenta este parámetro ya que siempre tiene que ir la última.
+    - **depends_on:** depende de otro servicio. Primero se levanta el servicio del que depende y luego él mismo.
+    - **links**: relación entre servicios.
+    - **restart**: política que se aplica cuando hay algún fallo en el contenedor.
+
+![Ejemplo fichero Compose 01](Images/6.3_compose_01.png)
+![Ejemplo fichero Compose 02](Images/6.3_compose_02.png)
+
+### 6.4 Comandos Compose
+- Comandos
+    - docker-compose <comando> <servicio/s>
+    - **up**: realiza el "build" **solo** la primera vez, y crea las imágenes. 
+        - Para hacer el **build** se debe forzar utilizando el comando **--build**.
+        - $ docker-compose up --help
+    - pull
+    - build
+    - push
+    - run
+    - rm
+
+### 6.5 Ejemplo Docker Compose
+```bash
+# Dentro de la carpeta del Docker Compose
+#   --build: vuelve a ejecutar todo el proceso aunque ya se haya ejecutado anteriormente.
+$ docker-compose up -d [ --build ]
+
+# Ver servicios arrancados
+$ docker-compose ps
+
+# Ver las imágenes definidas
+$ docker-compose images
+```
+
+### 6.6 Ejercicio
+- Fichero compose con dos servicios que se reinicien siempre.
+    - DB
+        - MySQL 5.7
+        - Volumen /var/lib/mysql (host-container)
+    - Wordpress
+        - Depende de DB
+        - 8000:80
+
+- Resolución
+```bash
+$ cat docker-compose.yml
+version: '3.3'
+services:
+    db:
+        image: 'mysql:5.7'
+        volumes:
+            - 'db_data:/var/lib/mysql'
+        environment:
+            MYSQL_ROOT_PASSWORD: somewordpress
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: wordpress
+            MYSQL_PASSWORD: w0rdpr45!
+        restart: always
+    wordpress:
+        image: 'wordpress:latest'
+        depends_on:
+            - db
+        ports:
+            - '8000:80'
+        restart: always
+        environment:
+            WORDPRESS_DB_HOST: 'db:3306'
+            WORDPRESS_DB_USER: wordpress
+            WORDPRESS_DB_PASSWORD: w0rdpr45!
+volumes:
+    db_data:
+```
 
 ## 7. Docker Registry
 
