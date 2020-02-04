@@ -669,6 +669,7 @@ $ docker-compose --version
     - push
     - run
     - rm
+- [Más info](https://www.thegeekstuff.com/2016/04/docker-compose-up-stop-rm/)
 
 ### 6.5 Ejemplo Docker Compose
 ```bash
@@ -724,6 +725,86 @@ volumes:
 
 ## 7. Docker Registry
 
+### 7.1 Introducción
+- Permite almacenar y distribuir imágenes propias. 
+- Docker Hub sería un registry.
+    - Posix Local
+    - S3
+    - Azure
+    - OpenStack Swift
+    - Google Cloud Storage
+- Imagen de contenedor
+    - **docker -d -p 5000: 5000 registr:2**
+
+![Docker Registry 1](Images/7.1_registry_01.png)
+![Docker Registry 2](Images/7.1_registry_02.png)
+
+### 7.2 Instalación
+- Configuración
+    - Almacenamiento
+        - **docker -d -p 5000: 5000 -v /dir/registry:/var/lib/registry registry:2**
+    - Seguridad
+        - TLS
+
+```bash
+# Primer registry
+#   No hace falta crear la carpeta "registro", la crea en el build.
+$ cat docker-compose_first.yml 
+version: "3.2"
+services:
+  registry:
+    restart: always
+    image: registry:2
+    ports: 
+      - 5007:5000
+    volumes:
+      - ./registro:/var/lib/registry
+  web:
+    restart: always
+    image: konradkleine/docker-registry-frontend:v2
+    ports: 
+      - 8082:80
+    environment:
+      - ENV_DOCKER_REGISTRY_HOST=<IP-LOCAL> \
+      - ENV_DOCKER_REGISTRY_PORT=5007
+
+
+$ docker-compose up -d
+
+$ docker info 
+Insecure Registries:
+  127.0.0.0/8 # Aquí DEBE aparece la IP local de la máquina.
+
+# Modificar fichero para añadir la IP
+$ sudo vim /etc/docker/daemon.json
+{
+    "insecure-registries":["192.168.186.128:5007"] # IP local + puerto
+}
+
+# Reiniciar servicio de docker
+$ sudo systemctl restart docker
+
+# Renombar imagen como en Docker Hub pero en este caso con IP+Puerto
+$ docker image tag busybox 192.168.186.128:5007/busybox
+
+# Subir imagen
+$ docker push 192.168.186.128:5007/busybox
+
+# Ver imágenes subidas
+$ ls -l registro/docker/registry/v2/repositories/
+http://192.168.186.128:8082/
+```
+
 ## 8. Trabajando con Docker en entornos de desarrollo
+
+### 8.1 Microservicios
+
+### 8.2 Docker en producción
+
+### 8.3 Docker en cluster - Docker Swarm
+
+### 8.4 Docker e integración continua
+
+### 8.5 Seguridad en Docker
 
 ## 9. Kubernetes
