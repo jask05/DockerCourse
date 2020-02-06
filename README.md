@@ -798,8 +798,61 @@ http://192.168.186.128:8082/
 ## 8. Trabajando con Docker en entornos de desarrollo
 
 ### 8.1 Microservicios
+- Enfoque para desarrollar aplicaciones con una serie de pequeños servicios, cada uno ejecutándose de forma autónoma y comunicándose entre si a través de peticiones HTTP a sus APIs.
+- Hay un nº mínimo de servicios que gestionan cosas comunes para los demás, como el acceso a la BD.
+- Cada uno es independiente, y el código debe ser desplegado sin afectar a los demás. Pueden ser lenguajes diferentes.
+- Deben funcionar de forma independiente.
+- "Se considera microservicio si el código se puede escribir en 2 semanas" (NO es una regla).
+- Inferfaz monolítica
+    - Si se realiza un cambio en el Módulo 1, se debe subir toda la aplicación a producción ya que es un paquete, un conjunto.
+- Pros
+    - Pequeños: cada componente es un ejecutable por si mismo y se comunican entre si mediante llamadas.
+    - Independientes: cada uno se puede desplegar de forma independiente sin afectar al otro.
+    - Despliegue sencillo
+    - Facilita la gestión de equipos: funcionales y autónomos: BD, Backend, etc.
+    - Escalabilidad: más fácil de escalar a nivel de SW. Se replican los microservicios que tengan una carga mayor.
+    - Reutilizables
+    - Externalización
+- Contras
+    - Introducen complejidad que hay que aprender a gestionar
+    - Gestión de trazas
+    - Despliegues
+- Antes de comenzar a desarrollar es conveniente estudiar si compensa tener una aplicación monolítica o con microservicios.
+    
+
+![Microservicios](Images/8.1_microservicios_01.png)
 
 ### 8.2 Docker en producción
+- Ventajas
+    - Imágenes inmutables y portables
+    - Distribución
+    - Combinar microservicios
+- Retos de Docker en producción a mejorar
+    - **Service discovery**: fáciles de localizar por los servicios que quieren interactuar con estos y también sus credenciales de acceso y/o uso.
+    - **Balanceo de carga**: mismo microservicio en varios contenedores, debe haber un end-point que balancee las peticiones entre distintos contenedores.
+    - **Configuración de red**: algunos servicios en redes diferentes solo pueden ser contantado por un sub-conjunto de microservicios. El problema se solventaría con la gestión de redes y sub-redes. De esta forma distintos servicios no se podrían ver entre ellos (de no ser necesario).
+    - **Persistencia**
+    - **Escalabilidad**
+    - **Loggin y monitorización**
+    - **Respuesta a fallos**: monitorizar y despliegue si hay fallos.
+- ¿Qué es y por qué necesitaríamos de un orquestador?
+    - Fueron desarrollados para gestionar de forma sencilla la creación, distribución y ejecución de contenedores a través de una gran infraestructura distribuida. Controla y dirige cada aspecto del sistema: creación, verificación, comprobación de errores etc. Si hay muchos desplegados es inviable mantenerlos manualmente.
+    - ¿Cuáles hay?
+        - Swarm
+            - Oficial de Docker. Soportado por AWS.
+            - Arquitectura controlador y nodos.
+            - Defecto
+                - No existe control sobre fallo de los nodos.
+                - Peligroso para servicios de alta disponibilidad.
+        - Mesos
+            - Ofrece un kernel para cluster que corran en cada nodo y ofrecen plataformas como Hadop.
+            - Tolerante a fallos.
+        - Kubernetes
+            - Automatiza el despliegue a través del datacenter.
+            - Gestiona PODs (uno o más contenedores que forman un servicio y permite interconectar diferentes PODs).
+    - ¿Mejor?
+        - El más usado es Kubernete (y + complejo que los demás).
+        - Swarm solo gestiona contenedores Docker. Kunernetes y Mesos soportan varios tipos de contenedores.
 
 ### 8.3 Docker en cluster - Docker Swarm
 
