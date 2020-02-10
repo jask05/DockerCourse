@@ -8,7 +8,7 @@
 - Industria software ha cambiado:
 - Antes
     - App monolíticas.
-    - Largos ciclos de desarollo.
+    - Largos ciclos de desarrollo.
     - Entorno único.
     - Escalado lentamente.
 - Ahora
@@ -22,7 +22,7 @@
     - Frameworks
     - BBDD
 - Muchos entornos diferentes
-    - Entornos de desarroll individual.
+    - Entornos de desarrollo individual.
     - Preproducción, QA, integración, etc.
     - Producción: cloud e hybrid.
 - Docker es una herramienta de código abierto.
@@ -45,7 +45,7 @@
     - **Cliente**
         - El usuario interactúa con el demonio por medio del cliente.
         - Suele utilizarse la línea de comandos.
-        - Tiene API. Permite escribir programas que interactuen directamente con el demonio sin usar el cliente.
+        - Tiene API. Permite escribir programas que interactúen directamente con el demonio sin usar el cliente.
         - Se usa para hablar con el dominio a través del protocolo HTTP.
     - **Demonio**
         - Proceso principal de gestión del _engine_. 
@@ -74,13 +74,13 @@
 - Virtualización
     - Máquina virtual: virtualización del entorno de ejecución para ejecutar aplicaciones.
     - Virtualización del hardware
-- El contenedor tiene lo escencial para ejecutar la aplicación. 
+- El contenedor tiene lo esencial para ejecutar la aplicación. 
 - Una MV tiene todo el SO y dentro de este se pueden instalar diferentes servicios, con el consiguiente consumo que supone.
 - Entorno virtualizado
     - Varios SOs.
     - SO invitado. Es el que se ejecuta sobre el HW virtualizado. 
     - Ventajas
-        - Ejecucción de un SO diferente al instalado.
+        - Ejecución de un SO diferente al instalado.
         - Posibilidad de clonar y mover la MV de un ordenador físico a otro.
         - Aprovechamiento de recursos con varios _guests_ en un mismo host.
     - Inconvenientes
@@ -211,7 +211,7 @@ $ docker ps -a # Se está deprecando, mejor usar ls
 # Lista de directorio raíz todos los ficheros y directorios.
 $ docker container run ubuntu ls -ltr 
 
-# Lo mismo que el anterior pero de la versión anterior de UBuntu
+# Lo mismo que el anterior, pero de la versión anterior de Ubuntu.
 $ docker container run ubuntu:16.04 ls -ltr
 
 # Cambiar nombre (NAMES) por el que se escoja
@@ -242,7 +242,7 @@ $ docker inspect nombreContenedor
 $ docker inspect --format='{{.Name}}' infallible_rubin
 $ docker inspect --format='{{.NetworkSettings.SandboxKey}}' infallible_rubin
 
-# Se para pero no se borra
+# Se para, pero no se borra
 # Se pueden parar varios a la vez
 $ docker stop <contenedor>
 
@@ -432,13 +432,13 @@ $ docker container stop f4769a9d1f2d
 - Cada capa representa un cambio importante dentro del sistema de ficheros del contenedor.
 - Se pueden compartir entre distintas imágenes.
 - Una imagen es una especia de snaptshop/captura creado a partir de distintas capas.
-- Las imágenes se basan en un sistema de archivos de capas que ofrecen ventajas y beneficios: ligerios, compartir partes comunes que muchos contenedores pueden desplegar y ejecutar en la misma máquina.
+- Las imágenes se basan en un sistema de archivos de capas que ofrecen ventajas y beneficios: ligeros, compartir partes comunes que muchos contenedores pueden desplegar y ejecutar en la misma máquina.
 - **NO** se pueden modificar las capas de una imagen. Solo se pueden ver.
     - El contenedor de esa imagen es quien crea la capa superior, se superpone sobre la capa de la imagen y sobre esta **si** se tendrán permisos de escritura.
 - Docker gestiona todo el tema de las capas mediante un **storage driver**. 
     - Controlador de almacenamiento de Docker que maneja los detalles sobre la forma en que están estas capas e interactúan entre si. 
     - Hay diferentes tipos de controladores disponibles: Overlay2 (default), Auxs, etc.
-- Varios contenedores pueden compartir el acceso a la misma imagen pero tener su propio estado independiente. 
+- Varios contenedores pueden compartir el acceso a la misma imagen, pero tener su propio estado independiente. 
 
 ![Capas - Imagen de Ubuntu 15.04](Images/4.1_capas_01.png)
 ![Capas y Contenedor - Imagen de Ubuntu 15.04 + Contenedor](Images/4.1_capas_02.png)
@@ -456,7 +456,7 @@ $ docker image build [-t <tag>] <contexto>
 ```
 
 ### 4.3 Qué es Dockerfile?
-- Archivo de texto plano que contienes las intrucciones; pasos que se han de ejecutar para que la imagen funcione correctamente.
+- Archivo de texto plano que contienes las instrucciones; pasos que se han de ejecutar para que la imagen funcione correctamente.
 - Instrucciones necesarias para automatizar la creación de una imagen que se usará posteriormente para la ejecución de instancias específicas.
 - Instrucciones que se le pasan
     - A partir de qué imagen (Ubuntu, Alpine, Busybox, etc) se va a crear la imagen.
@@ -565,10 +565,10 @@ $ docker pull <id-usuario>/<nombre-imagen>
 
 - La caché afecta a operaciones de **build**, **pull** y **push**.
 - En la creación de imágenes, Docker ejecuta las intrucciones en el Dockerfile y busca cada capa en caché (si existe) para ver si la puede reutilizar. 
-    - Para instrucciones ADD y COPY, el contenido de archivos son examinados (checksum).
+    - Para instrucciones ADD y COPY, el contenido del archivo es examinado (checksum).
     - Si hay modificación en esos ficheros se vuelven a comprobar y añadir.
     - Estas compilaciones se crean y destruyen en el disco, por eso es importante la caché.
-- Si los objetos en el sistema de archivos no cambia entre compilaciones, la caché ahorra tiempo. 
+- Si los objetos en el sistema de archivos no cambian entre compilaciones, la caché ahorra tiempo. 
     - Esto hace que construir un nuevo contenedor sea bastante rápido. 
     - No se tienen que crear ni destruir ninguna estructura de archivos ya que no ha habido modificación.
 - No siempre se requiere usar la caché
@@ -581,7 +581,7 @@ $ docker pull <id-usuario>/<nombre-imagen>
 ### 4.7 Buenas prácticas (Dockerfile)
 
 1. Optimizar instrucciones
-    - Usar el menor nº posible.
+    - Usar el menor número posible.
     - Encadenar comandos en la misma instrucción.
 2. NO instalar paquetes innecesarios.
 3. Ordenar argumentos de varias líneas.
@@ -607,6 +607,7 @@ $ docker pull <id-usuario>/<nombre-imagen>
 ### 5.2 Tipos de Volúmenes
 - **Volúmenes de datos**: disco que se acopla dentro de un contenedor. Se crea un contenedor con un volumen y ese mismo contenedor se va a utilizar cuando se arranque otro contenedor para almacenar datos.
 - **Volúmenes de host**: directorio de la máquina compartido con el contenedor.
+- [**Más info**](https://dockertips.com/volumenes)
 
 ### 5.3 Trabajando con Volúmenes
 ```bash
@@ -631,7 +632,7 @@ $ docker inspect <volúmen>
 ## 6. Aplicaciones multicontenedor - Docker compose
 
 ### 6.1 ¿Qué es Docker Compose?
-- Herramienta para definir y correr aplicaciones multicontenedores.
+- Herramienta para definir y correr aplicaciones multi contenedores.
 - Bueno para integración continua.
 - Archivo de Compose.
     - Los **contenedores** se denominan **servicios**.
@@ -798,12 +799,12 @@ http://192.168.186.128:8082/
 ## 8. Trabajando con Docker en entornos de desarrollo
 
 ### 8.1 Microservicios
-- Enfoque para desarrollar aplicaciones con una serie de pequeños servicios, cada uno ejecutándose de forma autónoma y comunicándose entre si a través de peticiones HTTP a sus APIs.
-- Hay un nº mínimo de servicios que gestionan cosas comunes para los demás, como el acceso a la BD.
+- Enfoque para desarrollar aplicaciones con una serie de pequeños servicios, cada uno ejecutándose de forma autónoma y comunicándose entre sí a través de peticiones HTTP a sus APIs.
+- Hay un número mínimo de servicios que gestionan cosas comunes para los demás, como el acceso a la BD.
 - Cada uno es independiente, y el código debe ser desplegado sin afectar a los demás. Pueden ser lenguajes diferentes.
 - Deben funcionar de forma independiente.
 - "Se considera microservicio si el código se puede escribir en 2 semanas" (NO es una regla).
-- Inferfaz monolítica
+- Interfaz monolítica
     - Si se realiza un cambio en el Módulo 1, se debe subir toda la aplicación a producción ya que es un paquete, un conjunto.
 - Pros
     - Pequeños: cada componente es un ejecutable por si mismo y se comunican entre si mediante llamadas.
@@ -855,6 +856,69 @@ http://192.168.186.128:8082/
         - Swarm solo gestiona contenedores Docker. Kunernetes y Mesos soportan varios tipos de contenedores.
 
 ### 8.3 Docker en cluster - Docker Swarm
+
+- Permite gestionar un grupo de hosts de Docker como un único host de docker virtual.
+- Swarm utiliza la API estándar de Docker. Cualquier herramienta que se comunique con el Docker Daemon puede usar Docker Swarm.
+- Para desplegar una imagen de una aplicación hay que crear un servicio.
+- Su API es compatible con Docker Engine.
+- Desde la versión 12 se puede utilizar el "swarm mode".
+- Cuando haya un servicio se definirá su estado óptimo (recursos de red, almacenamiento, puertos expuestos, etc.). Docker trabaja para mantener el estado deseado.
+- Si un nodo worker (los que ejecutan las tareas dentro de los contenedores) deja de estar disponible, Docker va a programar las tareas de ese nodo (contenedor en ejecución) en otro nodo.
+    - Tarea: contenedor en ejecución que forma parte de un servicio dentro del cluster y está administrado por un manager que realiza tareas de administrador sobre las tareas que se van ejecutando.
+- Ventaja de Swarm sobre los contenedores: puede modificar la configuración de un servicio. Cuida las redes y los volúmenes a los que está conectado sin la necesidad de reiniciar manualmente el servicio.
+- Cuando Docker se ejecuta en modo Swarm **puede** ejecutar contenedores independientes.
+- Diferencia entre contenedores independientes y servicios: solo los admins de estos servicios podrán gestionarlo. En cambio, los contenedores independientes se pueden ejecutar en cualquier nodo/hilo asignado al clúster. 
+- Características
+    - **Administración de clúster integrada**: no se necesita un sw de orquestación adicional para administrar el clúster.
+    - **Diseño descentralizado**: Docker maneja cualquier especialización en tiempo de ejecución (administrador o manager, trabajadores o workers). Se puede construir un clúster completo desde una sola imagen de disco.
+    - **Modelo de servicio declarativo**: puede escribir una aplicación compuesta con un servicio de FE web con un servicio de cola de BE con BBDD. 
+    - **Escalado**
+    - **Conciliación del estado deseado**: el nodo de admin de Swarm monitoriza constantemente el clúster y reconcilia cualquier diferencia entre el estado real y su estado deseado. Por ejemplo, si se configura un servicio para ejecutar 10 réplicas de un contenedor y una de estas réplicas se bloquea, el admin de clúster va a crear réplicas nuevas para reemplazar las que fallan. 
+    - **Red multi-host**: se podrá definir una red de superposición para los contenidos.
+    - **Detección de servicios**: los nodos administrador van a asignar a cada servicio un nombre DNS único. Se consulta a través de un servidor DNS incrustado.
+    - **Equilibrio de carga**: se pueden exponer los puertos para los servicios y balancear las cargas.
+    - **Actualizaciones continuas**.
+- Componentes y propiedades de Swarm
+    - **Nodos**: instancia del motor del Docker que participa en el clúster. Puede ejecutar uno o más nodos en una sola computadora física o nube pero su implementación de producción suele incluir nodos Docker distribuidos en múltiples máquinas físicas.
+    - **Servicios y tareas**: estructura central del sistema. Raíz principal de la integración del usuario con el clúster.
+    - **Balanceo de carga**: al admin de Swarm se encarga de exponer los servicios que desea que estén disponibles para el clúster. Si X contenedores ejecutan la misma tarea, el manager irá redirigiendo sobre estas tareas según la carga de trabajo que haya.
+- Manager - Nodos
+    - Se define un manager con tres workers. El manager, por defecto, se puede comportar como worker. 
+    - Cada worker ejecuta una tarea dentro de un contenedor. 
+    - Los nodos manager son los encargados de gestionar el clúster. 
+        - Al desplegar una aplicación se le indica la definición del servicio en un manager node.
+        - El manager node se encargará de las tareas que se ejecutan dentro de los workers.
+        - También ejecuta las tareas destinadas a mantener el clúster y el estado de salud de los servicios.
+        - Puede haber varios nodos manager en un clúster. Siempre se elige un líder que es el encargado de las tareas de orquestación.
+    - Los workers son instancias de Docker Engine cuyo propósito es ejecutar contenedores. Reciben y ejecutan las tareas indicadas por los nodos manager, y ejecutan un agente que informa al manager de las tareas que se les han asignado.
+- Servicios y tareas
+    - Servicio
+        - Definición de las tareas que se ejecutan dentro de un worker node. 
+        - Objeto principal de la estructura que se define en un sistema Swarm.
+        - Cuando se crea se indica qué imagen del contenedor se va a usar y qué comandos se van a ejecutar dentro del contenedor.
+        - Los manager asignan tareas a los node workers de acuerdo al número de réplicas definidas por el servicio.
+        - Cuando se crea el servicio se le puede asignar un número de réplicas, se crearán tantas tareas como réplicas que serán almacenadas en los contenedores de los workers que tengan asignado ese clúster.
+    - Tipos de servicios
+        - Implementaciones replicadas
+            - Swarm va a crear una tarea por cada réplica que se le indique, para después distribuirlas dentro del clúster.
+            - Ejemplo: servicio con 3 réplicas, Swarm creará 3 tareas.
+        - Implementaciones globales
+            - Servicio que se ejecuta la tarea en cada nodo.
+            - Cada vez que se añade un nuevo nodo al clúster, el orquestador va a crear una nueva tarea y el programador va a asignar la nueva tarea al nodo.
+- Balanceo
+    - Cuenta con un sistema para balancear la carga dentro de su propio núcleo.
+    - Cada nodo cuenta con el sistema pertinente para distribuir las peticiones.
+    - Los manager pueden publicar automáticamente un puerto generado al azar, entre el 30.000 y el 32.000 por cada servicio. También se puede publicar uno específico.
+    - Un sistema externo al clúster puede acceder al servicio en el puerto publicado a través de cualquier nodo de este, independientemente de que el nodo esté ejecutando una tarea del servicio o no.
+    - Swarm cuenta con un DNS interno que asigna automáticamente una entrada a cada uno de los servicios desplegados dentro del clúster.
+
+- Pasos para instalar Swarm en Ubuntu 18.04
+
+![Docker Swarm](Images/8.3_dockerswarm_01.png)
+![Docker Swarm - Manager](Images/8.3_dockerswarm_02.png)
+![Docker Swarm - Servicios y tareas](Images/8.3_dockerswarm_03.png)
+![Docker Swarm - Servicios y tareas: tipos de servicios](Images/8.3_dockerswarm_04.png)
+![Docker Swarm - Balanceo](Images/8.3_dockerswarm_05.png)
 
 ### 8.4 Docker e integración continua
 
