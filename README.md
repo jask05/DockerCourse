@@ -912,13 +912,49 @@ http://192.168.186.128:8082/
     - Un sistema externo al clúster puede acceder al servicio en el puerto publicado a través de cualquier nodo de este, independientemente de que el nodo esté ejecutando una tarea del servicio o no.
     - Swarm cuenta con un DNS interno que asigna automáticamente una entrada a cada uno de los servicios desplegados dentro del clúster.
 
-- Pasos para instalar Swarm en Ubuntu 18.04
-
 ![Docker Swarm](Images/8.3_dockerswarm_01.png)
 ![Docker Swarm - Manager](Images/8.3_dockerswarm_02.png)
 ![Docker Swarm - Servicios y tareas](Images/8.3_dockerswarm_03.png)
 ![Docker Swarm - Servicios y tareas: tipos de servicios](Images/8.3_dockerswarm_04.png)
 ![Docker Swarm - Balanceo](Images/8.3_dockerswarm_05.png)
+
+- Pasos para instalar Swarm en Ubuntu 18.04
+    1. Establecer IPs fijas a cada máquina.
+    2. Asignar nombre a cada máquina en el fichero **/etc/hosts**.
+    3. Arrancar Swarm: **docker swarm init --advertise-addr \<IP-local\>**
+        - Guardar y ejecutar la sentencia **docker swarm join** en cada nodo, así los workers se podrán unir al manager.
+    4. **(Opcional)** Implementar interfaz web para poder visualizar todos los workers, tareas, etc.
+        - Instalar Unzip si no lo está.
+        - Descargar fichero del respositorio: **wget https://github.com/dockersamples/docker-swarm-visualizer/archive/master.zip** y extraerlo.
+        - Mover directorio **docker-swarm-visualizer-master** debajo de la carpeta **examples**.
+        - Ejecutar: 
+        ```bash
+        docker run -it -d -p 5010:8080 -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
+        ```
+        - Abrir navegador web y entrar a la IP local de la máquina, al puerto 5010.
+    5. Se crean servicios Nginx con 3 réplicas
+        ```bash
+        docker service create --name mi-web --publish 8080:80 nginx
+        docker service scale mi-web=3
+        ```
+        - Comprobaciones por línea de comandos
+            ```bash
+            # Listado de los nodos
+            docker node ls
+            
+            # Ver servicios
+            docker service ls
+
+            # Inspeccionar servicio
+            docker service inspect --pretty <ID-Servicio>
+
+            # Ver qué nodos asociados están ejecutando el servicio
+            docker services ps <ID-Servicio>
+
+            # Eliminar un servicio
+            docker service rm <ID-Servicio>
+            ```
+
 
 ### 8.4 Docker e integración continua
 
