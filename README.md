@@ -955,9 +955,119 @@ http://192.168.186.128:8082/
             docker service rm <ID-Servicio>
             ```
 
-
 ### 8.4 Docker e integración continua
+- ¿Qué es?
+    - Práctica de desarrollo de software donde los miembros del equipo integran su trabajo frecuentemente, al menos una vez al día. Cada integración se verifica con un build automático (que incluye la ejecución de pruebas) para detectar errores de integración tan pronto como sea posible.
+    - Mayor visibilidad al proceso.
+    - Mejora la calidad del producto.
+- Herramientas necesarias
+    - Maven
+    - Git o Clear Case
+    - Jenkins o Hudson
+    - SonarQube
+    - Nexus
+- Con Docker
+    - Aplicaciones IC con imágenes.
+    - Automatizar el build de imágenes.
+    - Optimización de Docker Build.
+    - Test de integración con Docker.
+- Testeo de aplicaciones con Docker.
+    - Ligero
+    - Portable
+    - Inmutable
+
+```bash
+$ cat docker-compose.yml
+version: "3.2"
+services:
+  web:
+    image: nginx
+    build: .
+    depends_on:
+      - redis
+    ports:
+      - 5005:5000
+  redis:
+    image: redis
+  test:
+      build:
+        context: .
+        dockerfile: Dockerfile.test
+      depends_on:
+        - web
+      command: sh /test_dir/test.sh
+
+$ cat Dockerfile.test 
+FROM alpine:3.6
+
+RUN apk --no-cache add curl
+
+WORKDIR /test_dir
+
+ADD test.sh /test_dir/test.sh
+
+$ cat test.sh 
+#!/bin/bash
+echo "Empezando test"
+sleep 3
+echo "Ejecutando test"
+if curl <IP-LOCAL>:5005 | grep -q 'Detalles de visitas'; then
+  echo "Tests passed!"
+  exit 0
+else
+  echo "Tests failed!"
+  exit 1
+fi
+
+# Elimina el contenedor después de correrlo (solo test)
+#   Si hay algún problema al ejecutarlo, renombrar todo "test" a otro nombre de fichero.
+
+# (OPCIONAL) Fuerza a que el fichero vuelva a pasar a la imagen y coja la modificación.
+$ docker-compose up -d --build
+
+$ docker-compose run --rm test
+
+# Nombre de los servicios que se han creado (test o jask)
+$ docker-compose ps --services
+```
 
 ### 8.5 Seguridad en Docker
+- Evitar ataques
+    - Pérdida de disponibilidad, ataque DoS.
+    - Pérdida de confidencialidad, ataque Software & crypto exploit.
+    - Escalado de privilegios dentro del host, ataque Container scape.
+    - Host comprometido, ataque root/kernel exploit.
+- Seguridad dentro del host
+    - Partición específica para Docker.
+        - **/var/lib/Docker**
+    - Firewall
+    - Limitaciones por kernel de Linux.
+    - Docker y sistema operativo actualizados.
+- Servicio Docker
+    - Definir políticas.
+    - Gestión de logs: envío de los fuera del servidor.
+    - Limitar qué usuarios pueden controlar el dominio de Docker.
+- Limitación de recursos HW
+- Seguridad en la creación de imágenes con dockerfile
+    - Usuario creado en dockerfile
+        - RUN useradd <opciones>
+        - USER <usuario>
+    - Priorizar uso de COPY por encima de ADD: ADD tiene vulnerabilidades potenciales. Permite descargar ficheros maliciosos de diferentes URLS que no han sido comprobadas, puede descomprimir, etc.
+- Contenedores
+    - Permisos restringidos.
+    - Restricción de puertos: no permitir que los contenedores mapeen puertos privilegiados de la máquina host. Hay excepciones (80, 443).
+    - Limitar recursos: los recursos se consumen de forma equitativa, es buena idea limitarlos.
+- Análisis de vulnerabilidades
+    - DockerHub tiene una funcionalidad para tal fin.
 
 ## 9. Kubernetes
+
+### 9.1 Introducción
+
+### 9.2 Arquitectura
+
+### 9.3 Instalación
+
+### 9.4 Ejemplo
+
+### 9.5 Controladores
