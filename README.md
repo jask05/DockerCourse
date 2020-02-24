@@ -1063,10 +1063,133 @@ $ docker-compose ps --services
 ## 9. Kubernetes
 
 ### 9.1 Introducción
+- Kubernete o K8s
+- Orquestador de Kubernetes
+    - Gestión
+    - Despliegue
+    - Escalabilidad
+    - Monitorización
+    - Se puede gestionar toda la infra desde las APIs.
+- Plataforma de código abierto y proyecto muy vivo.
+- Características
+    - Distribución de contenedores.
+    - Balanceo de carga.
+    - Fácil gestión de servicios y aplicaciones.
+    - Escalabilidad.
+    - Alta disponibilidad.
+    - Monitorización de contenedores.
+    - Despliegue y retrocesos automáticos.
+    - Muy modular y mucha flexibilidad.
 
 ### 9.2 Arquitectura
+- Conceptos
+    - **Cluster**: grupo de máquinas físicas y virtuales que son utilizadas por Kubernetes dónde se despliegan los PODs gestionados y replicados.
+    - **Nodo**: máquina que se ejecuta en Kubernetes en las cuales se pueden programar los PODs.
+    - **Pod**: unidad más pequeña desplegable que puede ser creada, programada y manejada por Kubernetes. Grupo de contenedores Docker de aplicaciones que comparten volúmenes y red y que deben ser desplegados y gestionados por el *Replication controller*.
+    - **Replication controller**: maneja fallos y recrea, de ser necesario los PODs. Se asegura que el nodo de réplicas de PODs se esté ejecutando.
+    - **Servicio**: abstracción, define un conjunto de PODs y lógica para acceder a estos. Un conjunto de PODs están destinados a un servicio. El conjunto de PODs está etiqueta por un servicio y determinado por un selector de *labels*. Bajo un nombre están asociados y un servicio va a poder ejecutarlos. Se consigue que si hay un cambio en un POD sea transparente para el usuario y el servicio. Los servicios ofrecen la capacidad de buscar y distribuir el tráfico, proporcionando un nombre y dirección o puerto persistente para los PODs con un conjunto común de *labels*.
+    - **Labels**: pares clave/valor. Usados para agrupar, organizar y seleccionar un grupo de objetos como los PODs. Fundamentales para que los servicios y los *replications controlers* obtengan la lista de los servidores por donde el tráfico debe pasar.
+- Trabaja con una arquitectura maestro-esclavo.
+- Maestro
+    - Ejecuta los procesos de Kubernetes: servico API, programador, scheduler, controlador de recursos principales.
+    - Adminsitra el ciclo de vida del maestro cuando crea o elimina un cluster.
+    - Administra recursos de red y almacenamiento para las cargas de trabajo.
+- Nodos
+    - Un cluster suele tener 1 o x nodos.
+    - Máquinas que ejecutan todas las aplicaciones, el contenedor y otras cargas de trabajo.
+    - Los nodos actúan como cliente del servidor.
+    - Son gestionados desde el maestro. Le envían info al maestro.
+- Componentes en nodo máster y esclavo
+    - **Máster**
+        - **Scheduler**
+            - Distribuye los PODs entre los nodos. 
+            - Lee los requisitos del POD, analiza el clúster y selecciona los nodos aceptables. 
+            - Se comunica con el API server en busca de PODs no desplegadas para desplegarlos en el nodo que mejor satisface los requisitos. 
+            - Es el responsable de monitorización la utilización de recursos de cada host para asegurar que los PODs no sobrepasen los recursos disponibles. 
+        - **Kube-controller**
+            - Servicio usado para manejar el proceso de replicación definido en las tareas de replicación asignadas. 
+            - Detalles descritos en el ETCD, donde el controller manager va a observar los cambios. 
+            - Cuando se detecta un cambio, va a leer la nueva información y ejecuta el proceso de replicación hasta alcanzar el estado deseado.
+        - **Kube-apiserver**
+            - Provee el API que controla la orquestación de Kubernetes. 
+            - Responsable de mantenerla accesible. 
+            - Expone interfaz REST que procesa operaciones como creación, configuración de PODs y servicios de actualización de los datos almacenados en ETCD y es responsable que los datos de ETCD y características de los servicios de los contenedores desplegados sean coherentes. 
+            - Permite que distintas herramientas y librerías puedan comunicarse de una manera fácil y sencilla. 
+        - **ETCD**
+            - BBDD distribuida en múltiples nodos y almacena claves/valor donde Kubernetes va a ir guardando info (configuración y metadatos) acerca del mismo, PODs, servicios, redes, etc. para que puedan ser utilizadas por cualquier nodo del clúster. 
+            - Coordina los componentes ante cambio de sus valores. 
+            - Kubernetes utiliza ETCD para almacenar el estado del clúster.
+    - **Esclavo**
+        - **Podsdocker / Docker ORT** 
+            - Se utiliza para correr las aplicaciones en un ambiente encapsulado. 
+            - Motores de contenedores que funciona en cada nodo descargado y corre las imágenes.
+        - **Kube-Proxy**
+            - Proporciona servicio de proxy y de red. 
+            - Se encarga de los servicios que se encuentran disponible para el exterior, balanceo de carga y enrutamiento de tráfico por dirección IP.
+        - **cAdvisor**
+            - Recurso diseñado para los contenedores Docker e integrado en Kubelet. 
+            - Agente de uso de los recursos y análisis que descubre todos los contenedores en la máquina y recopila información sobre CPU, memoria, sistema de ficheros y estadísticas del uso de la API. 
+            - Proporciona el uso general de la máquina mediante el análisis del contenedor principal de la máquina.  
+        - **Kubelet**
+            - Gestiona los PODs, contenedores, imágenes, volúmenes, etc. 
+            - Cada nodo corre un Kubelet que es el responsa ble del registro de cada nodo y la gestión de los PODs corriendo en ese nodo. 
+            - Pregunta al API server por PODs para ser creados y desplegados por schedulers, y por PODs para ser borrados basados en eventos de clúster. 
+            - Gestiona y comunica la utilización de recursos, estado de los nodos, PODs corriendo.
+
+![Kubernetes - Arquitectura](Images/9.2_arquitectura_01.png)
+![Kubernetes - Componentes en nodo master y esclavos](Images/9.2_arquitectura_02.png)
 
 ### 9.3 Instalación
+- Se puede ejecutar en varias plataformas.
+- [Documentación - Instalación](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+- **Minikube**: opción de utilizar una versión mini de Kubernetes. Solo para pruebas de desarrollo. No es recomendable poner en producción.
+- **Microk8s**: otra opción para ejecutar Kubernetes de forma local. No requiere máquina virtual. Se puede instalar en Ubuntu y consume menos recursos que si se levanta un clúster.
+
+#### Pasos
+
+1. Asignar IP estática a cada máquina.
+2. Editar el fichero **/etc/hosts** en todas las máquinas y añadir registros manager01, worker01, etc.
+3. Habilitar docker **sudo systemctl enable docker**.
+4. Ejecutar:
+```bash
+$ sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+$ cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+$ sudo apt-get update
+$ sudo apt-get install -y kubelet kubeadm kubectl
+$ sudo apt-mark hold kubelet kubeadm kubectl
+
+# Deshabilitar el swap-memory ya que Kubernetes no funciona con la memoria de intercambio
+$ sudo swapoff -a
+
+# Cambiar hostname
+$ sudo hostnamectl set-hostname manager01
+$ sudo hostnamectl set-hostname worker01
+$ sudo hostnamectl set-hostname worker02
+
+# Manager
+$ sudo kubeadm init --pod-network-cidr=192.168.1.252/16
+
+# To start using your cluster, you need to run the following as a regular user:
+$ mkdir -p $HOME/.kube
+$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Desplegar red de PODs
+$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+# Comprobar que funcionan todos los servicios
+$ kubectl get pods --all-namespaces
+
+# Nodos esclavos
+$ sudo kubeadm join <IP>:6443 --token <TOKEN> --discovery-token-ca-cert-hash sha256:<HASH>
+
+# Comprobar nodos en el cluster
+$ kubectl get nodes 
+```
+
 
 ### 9.4 Ejemplo
 
