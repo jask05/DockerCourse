@@ -831,7 +831,7 @@ http://192.168.186.128:8082/
 - Retos de Docker en producción a mejorar
     - **Service discovery**: fáciles de localizar por los servicios que quieren interactuar con estos y también sus credenciales de acceso y/o uso.
     - **Balanceo de carga**: mismo microservicio en varios contenedores, debe haber un end-point que balancee las peticiones entre distintos contenedores.
-    - **Configuración de red**: algunos servicios en redes diferentes solo pueden ser contantado por un sub-conjunto de microservicios. El problema se solventaría con la gestión de redes y sub-redes. De esta forma distintos servicios no se podrían ver entre ellos (de no ser necesario).
+    - **Configuración de red**: algunos servicios en redes diferentes solo pueden ser contantado por un subconjunto de microservicios. El problema se solventaría con la gestión de redes y subredes. De esta forma distintos servicios no se podrían ver entre ellos (de no ser necesario).
     - **Persistencia**
     - **Escalabilidad**
     - **Loggin y monitorización**
@@ -875,7 +875,7 @@ http://192.168.186.128:8082/
     - **Escalado**
     - **Conciliación del estado deseado**: el nodo de admin de Swarm monitoriza constantemente el clúster y reconcilia cualquier diferencia entre el estado real y su estado deseado. Por ejemplo, si se configura un servicio para ejecutar 10 réplicas de un contenedor y una de estas réplicas se bloquea, el admin de clúster va a crear réplicas nuevas para reemplazar las que fallan. 
     - **Red multi-host**: se podrá definir una red de superposición para los contenidos.
-    - **Detección de servicios**: los nodos administrador van a asignar a cada servicio un nombre DNS único. Se consulta a través de un servidor DNS incrustado.
+    - **Detección de servicios**: los nodos administradores van a asignar a cada servicio un nombre DNS único. Se consulta a través de un servidor DNS incrustado.
     - **Equilibrio de carga**: se pueden exponer los puertos para los servicios y balancear las cargas.
     - **Actualizaciones continuas**.
 - Componentes y propiedades de Swarm
@@ -1087,7 +1087,7 @@ $ docker-compose ps --services
     - **Nodo**: máquina que se ejecuta en Kubernetes en las cuales se pueden programar los PODs.
     - **Pod**: unidad más pequeña desplegable que puede ser creada, programada y manejada por Kubernetes. Grupo de contenedores Docker de aplicaciones que comparten volúmenes y red y que deben ser desplegados y gestionados por el *Replication controller*.
     - **Replication controller**: maneja fallos y recrea, de ser necesario los PODs. Se asegura que el nodo de réplicas de PODs se esté ejecutando.
-    - **Servicio**: abstracción, define un conjunto de PODs y lógica para acceder a estos. Un conjunto de PODs están destinados a un servicio. El conjunto de PODs está etiqueta por un servicio y determinado por un selector de *labels*. Bajo un nombre están asociados y un servicio va a poder ejecutarlos. Se consigue que si hay un cambio en un POD sea transparente para el usuario y el servicio. Los servicios ofrecen la capacidad de buscar y distribuir el tráfico, proporcionando un nombre y dirección o puerto persistente para los PODs con un conjunto común de *labels*.
+    - **Servicio**: abstracción, define un conjunto de PODs y lógica para acceder a estos. Un conjunto de PODs están destinados a un servicio. El conjunto de PODs está etiquetado por un servicio y determinado por un selector de *labels*. Bajo un nombre están asociados y un servicio va a poder ejecutarlos. Se consigue que si hay un cambio en un POD sea transparente para el usuario y el servicio. Los servicios ofrecen la capacidad de buscar y distribuir el tráfico, proporcionando un nombre y dirección o puerto persistente para los PODs con un conjunto común de *labels*.
     - **Labels**: pares clave/valor. Usados para agrupar, organizar y seleccionar un grupo de objetos como los PODs. Fundamentales para que los servicios y los *replications controlers* obtengan la lista de los servidores por donde el tráfico debe pasar.
 - Trabaja con una arquitectura maestro-esclavo.
 - Maestro
@@ -1095,7 +1095,7 @@ $ docker-compose ps --services
     - Adminsitra el ciclo de vida del maestro cuando crea o elimina un cluster.
     - Administra recursos de red y almacenamiento para las cargas de trabajo.
 - Nodos
-    - Un cluster suele tener 1 o x nodos.
+    - Un clúster suele tener 1 o x nodos.
     - Máquinas que ejecutan todas las aplicaciones, el contenedor y otras cargas de trabajo.
     - Los nodos actúan como cliente del servidor.
     - Son gestionados desde el maestro. Le envían info al maestro.
@@ -1145,6 +1145,10 @@ $ docker-compose ps --services
 - **Minikube**: opción de utilizar una versión mini de Kubernetes. Solo para pruebas de desarrollo. No es recomendable poner en producción.
 - **Microk8s**: otra opción para ejecutar Kubernetes de forma local. No requiere máquina virtual. Se puede instalar en Ubuntu y consume menos recursos que si se levanta un clúster.
 
+### Deployments
+- Configuración más avanzada de los PODs.
+- Cuando se crea una instancia única en el POD, con el deployment se le dice a Kubernetes que administre un conjunto de réplicas del POD.
+
 #### Pasos
 
 1. Asignar IP estática a cada máquina.
@@ -1185,12 +1189,166 @@ $ kubectl get pods --all-namespaces
 
 # Nodos esclavos
 $ sudo kubeadm join <IP>:6443 --token <TOKEN> --discovery-token-ca-cert-hash sha256:<HASH>
+# Volver a generar el token por si se pierde
+$ kubeadm token create --print-join-command
 
 # Comprobar nodos en el cluster
 $ kubectl get nodes 
 ```
 
+### 9.4 Ejemplo de cómo lanzar servicios, pods y deployments
 
-### 9.4 Ejemplo
+```bash
+# Clúster de Nginx
+#   kubectl run <nombre-servicio> --image=<imagen> --replicas=<nº de veces que tiene que estar levantado el servicio> --port=<puerto por lo que escucha>
+$ sudo kubectl run nginx-server --image=nginx --replicas=2 --port=80
+
+# Exponer el servicio fuera del clúster ya que por defecto solo se verían entre contenedores
+$ sudo kubectl expose deployment nginx-server --port=8080 --name=nginx-http --type=NodePort
+
+# Ver servicios creados
+$ kubectl get svc
+
+# Ofrece más detalles del servicio
+$ kubectl describe services nginx-http
+
+# Ver endpoint
+$ kubectl get endpoints
+
+# Ejemplo de cómo levantar PODs con ficheros de configuración
+$ cat pod.yaml
+ apiVersion: v1
+ kind: Pod
+ metadata:
+   name: rss-site
+   labels:
+     app: web
+ spec:
+   containers:
+     - name: front-end
+       image: nginx
+       ports:
+         - containerPort: 8084
+     - name: rss-reader
+       image: nickchase/rss-php-nginx:v1
+       ports:
+         - containerPort: 8085
+
+$ cat deployment.yaml
+ apiVersion: extensions/v1beta1
+ kind: Deployment
+ metadata:
+   name: rss-site-deploy
+ spec:
+   replicas: 2
+   template:
+     metadata:
+       labels:
+         app: web
+     spec:
+       containers:
+         - name: front-end-dep
+           image: nginx
+           ports:
+             - containerPort: 8086
+         - name: rss-reader-dep
+           image: nickchase/rss-php-nginx:v1
+           ports:
+             - containerPort: 8087
+
+$ kubectl create -f pod.yaml
+
+# Revisar status del pod (puede que tarde en generarse)
+$ kubectl get pods
+
+# Info sobre dónde está desplegado el POD
+$ kubectl describe pods rss-site
+
+# Deployment
+$ cat deployment.yaml
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: rss-site-deploy
+ spec:
+   selector:
+    matchLabels:
+      app: web
+   replicas: 2
+   template:
+     metadata:
+       labels:
+         app: web
+     spec:
+       containers:
+         - name: front-end-dep
+           image: nginx
+           ports:
+             - containerPort: 8086
+         - name: rss-reader-dep
+           image: nickchase/rss-php-nginx:v1
+           ports:
+             - containerPort: 8087
+
+$ kubectl create -f deployment.yaml
+$ kubectl get deployments
+```
 
 ### 9.5 Controladores
+
+- Permite dentro de un clúster, vigilar, desplegar y mantener recursos.
+- Cada uno de ellos tendrá una misión.
+- Tipos
+    - Replication controllers y replication sets
+    - Deployments
+    - StatefulSets
+    - DaemonSets
+    - Jobs y cron jobs
+
+#### Replication controllers y replication sets
+- Replication controllers
+    - Define una plantilla de Pod.
+    - Responsable de garantizar que la cantidad de pods implementados en el clúster coincida con la cantidad de pods en su configuración.
+- Replication sets
+    - Replication controller de próxima generación.
+    - Están comenzando a sustituir a los *replication controllers*.
+
+#### Deployments
+- Proporciona actualizaciones declarativas para Pods y ReplicaSets.
+- Uno de los controladores más usados.
+- Resuelven muchos de los puntos problemáticos que existían en la implementación de actualizaciones continuas.
+
+#### StatefulSets
+- Administración de aplicaciones con estado.
+- Administran la implementación y la escalabilidad de un conjunto de pods.
+- Proporciona un identificador de red estable al crear un nombre único.
+
+#### DaemonSets
+- Garantiza que todos los nodos (o algunos) ejecuten una copia de un Pod.
+- Permite eliminar Pods no usados.
+
+#### Jobs y cron jobs
+- Kubernetes utiliza una carga de trabajado denominado *jobs* para proporcionar un flujo basado en tareas donde se esperan que los contenedores en ejecución salgan con éxito después de un tiempo.
+- Jobs
+    - Crean uno o más Pods y asegura que un número específico de ellos termine con éxito.
+    - Cuando el Pod se ejecuta con éxito el Job rastrea las ejecuciones exitosas. El trabajo estaría completo.
+    - Eliminar un Job limpia todos los Pods asociados.
+    - Se puede utilizar para ejecutar varios Pods en paralelo.
+- CronJobs
+    - Proporcionan una interfaz para ejecutar trabajos con un componente de planificación.
+
+#### Pods y configuración
+- **Pod**
+    - Encapsula un contenedor de aplicación (o múltiples), la ejecucción de una aplicación estará dentro de un contenedor. 
+    - También habrá recursos de almacenamiento, IPs únicas, etc. 
+    - Representa una unidad de implementación, una instancia única de una aplicación en Kubernetes que puede consistir en un solo contenedor o varios que ejecutan una o varias aplicaciones los cuales pueden compartir recursos.
+    - Bloque de construcción básico de Kubernetes.
+    - Es la unidad más pequeña y simple en el modelo de objeto Kubernetes que se puede crear.
+    - Representa un proceso en ejecución en su clúster.
+    - Destinado a ejecutar una única instancia de una aplicación determinada. Si se desea escalar una aplicación horizontalmente, se deben usar varios Pods (replicación).
+        - Los Pods replicados se crean y administran como un grupo mediante una abstracción denominada *controller*. 
+- Se pueden usar de dos maneras principales:
+    - Pods que ejecutan un solo contenedor (una envoltura alrededor un solo contenedor y Kubernetes adminsitra los Pods en lugar de los contenedores directamente).
+    - Pods que ejecutan múltiples contenedores que necesitan trabajar juntos. Puede encapsular una aplicación compuesta de múltiples contenedores, ubicados y estrechamente acoplados y necesitan compartir recursos.
+        - Pueden tomar una única unidad de servicio cohesiva.
+            - Un contenedor que sirva archivos de un volumen compartido mientras otro contenedor actualiza/modifica los archivos. El Pod envuelte estos contenedores/recursos de almacenamiento como una única entidad manejable.
