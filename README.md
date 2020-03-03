@@ -1,9 +1,6 @@
 # Curso Docker - KeepCoding
 
-## 0. Índice
-
 - [Curso Docker - KeepCoding](#curso-docker---keepcoding)
-  - [0. Índice](#0-%c3%8dndice)
   - [1. Introducción](#1-introducci%c3%b3n)
     - [1.1 Introducción a Contenedores y Docker](#11-introduccio%cc%81n-a-contenedores-y-docker)
     - [1.2 Características](#12-caracter%c3%adsticas)
