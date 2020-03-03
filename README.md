@@ -4,18 +4,18 @@
 
 - [Curso Docker - KeepCoding](#curso-docker---keepcoding)
   - [0. Índice](#0-%c3%8dndice)
-  - [1. Introducción <a name="introduccion"></a>](#1-introducci%c3%b3n)
+  - [1. Introducción](#1-introducci%c3%b3n)
     - [1.1 Introducción a Contenedores y Docker](#11-introduccio%cc%81n-a-contenedores-y-docker)
     - [1.2 Características](#12-caracter%c3%adsticas)
     - [1.3 Componentes de Docker](#13-componentes-de-docker)
     - [1.4 Concepto de contenedores](#14-concepto-de-contenedores)
     - [1.5 Diferencia entre contenedores y máquinas virtuales](#15-diferencia-entre-contenedores-y-ma%cc%81quinas-virtuales)
     - [1.6 ¿Por qué son tan eficientes los contenedores?](#16-%c2%bfpor-que%cc%81-son-tan-eficientes-los-contenedores)
-  - [2. Instalación <a name="instalacion"></a>](#2-instalaci%c3%b3n)
+  - [2. Instalación](#2-instalaci%c3%b3n)
     - [2.1 Docker en los distintos sistemas operativos](#21-docker-en-los-distintos-sistemas-operativos)
     - [2.2 Instalar Docker en Linux](#22-instalar-docker-en-linux)
     - [2.3 Primer Contenedor](#23-primer-contenedor)
-  - [3. Empezando con Docker <a name="empezando-con-docker"></a>](#3-empezando-con-docker)
+  - [3. Empezando con Docker](#3-empezando-con-docker)
     - [3.1 Comandos Docker](#31-comandos-docker)
     - [3.2 Imágenes y contenedores](#32-im%c3%a1genes-y-contenedores)
     - [3.3 Docker Store - Docker Hub](#33-docker-store---docker-hub)
@@ -25,7 +25,7 @@
     - [3.7 Comandos para imágenes](#37-comandos-para-im%c3%a1genes)
     - [3.8 Empezando con Docker - Ejercicio 2](#38-empezando-con-docker---ejercicio-2)
     - [3.9 Empezando con Docker - Ejercicio 3](#39-empezando-con-docker---ejercicio-3)
-  - [4. Creación de imágenes <a name="creacion-de-imagenes"></a>](#4-creaci%c3%b3n-de-im%c3%a1genes)
+  - [4. Creación de imágenes](#4-creaci%c3%b3n-de-im%c3%a1genes)
     - [4.1 Arquitectura de imágenes](#41-arquitectura-de-im%c3%a1genes)
     - [4.2 Crear la primera imagen](#42-crear-la-primera-imagen)
     - [4.3 Qué es Dockerfile?](#43-qu%c3%a9-es-dockerfile)
@@ -34,27 +34,27 @@
     - [4.5 Subir y descargar imágenes en Docker Hub](#45-subir-y-descargar-im%c3%a1genes-en-docker-hub)
     - [4.6 Caché de Docker](#46-cach%c3%a9-de-docker)
     - [4.7 Buenas prácticas (Dockerfile)](#47-buenas-pr%c3%a1cticas-dockerfile)
-  - [5. Manejando volúmenes <a name="manejo-de-volumenes"></a>](#5-manejando-vol%c3%bamenes)
+  - [5. Manejando volúmenes](#5-manejando-vol%c3%bamenes)
     - [5.1 Introducción](#51-introducci%c3%b3n)
     - [5.2 Tipos de Volúmenes](#52-tipos-de-vol%c3%bamenes)
     - [5.3 Trabajando con Volúmenes](#53-trabajando-con-vol%c3%bamenes)
-  - [6. Aplicaciones multicontenedor - Docker compose <a name="docker-compose"></a>](#6-aplicaciones-multicontenedor---docker-compose)
+  - [6. Aplicaciones multicontenedor - Docker compose](#6-aplicaciones-multicontenedor---docker-compose)
     - [6.1 ¿Qué es Docker Compose?](#61-%c2%bfqu%c3%a9-es-docker-compose)
     - [6.2 Instalando Docker Compose](#62-instalando-docker-compose)
     - [6.3 Creando fichero Compose](#63-creando-fichero-compose)
     - [6.4 Comandos Compose](#64-comandos-compose)
     - [6.5 Ejemplo Docker Compose](#65-ejemplo-docker-compose)
     - [6.6 Ejercicio](#66-ejercicio)
-  - [7. Docker Registry <a name="docker-registry"></a>](#7-docker-registry)
+  - [7. Docker Registry](#7-docker-registry)
     - [7.1 Introducción](#71-introducci%c3%b3n)
     - [7.2 Instalación](#72-instalaci%c3%b3n)
-  - [8. Trabajando con Docker en entornos de desarrollo <a name="docker-dev"></a>](#8-trabajando-con-docker-en-entornos-de-desarrollo)
+  - [8. Trabajando con Docker en entornos de desarrollo](#8-trabajando-con-docker-en-entornos-de-desarrollo)
     - [8.1 Microservicios](#81-microservicios)
     - [8.2 Docker en producción](#82-docker-en-producci%c3%b3n)
     - [8.3 Docker en cluster - Docker Swarm](#83-docker-en-cluster---docker-swarm)
     - [8.4 Docker e integración continua](#84-docker-e-integraci%c3%b3n-continua)
     - [8.5 Seguridad en Docker](#85-seguridad-en-docker)
-  - [9. Kubernetes <a name="kubernetes"></a>](#9-kubernetes)
+  - [9. Kubernetes](#9-kubernetes)
     - [9.1 Introducción](#91-introducci%c3%b3n)
     - [9.2 Arquitectura](#92-arquitectura)
     - [9.3 Instalación](#93-instalaci%c3%b3n)
@@ -69,7 +69,7 @@
       - [Jobs y cron jobs](#jobs-y-cron-jobs)
       - [Pods y configuración](#pods-y-configuraci%c3%b3n)
 
-## 1. Introducción <a name="introduccion"></a>
+## 1. Introducción
 
 ### 1.1 Introducción a Contenedores y Docker
 - Industria software ha cambiado:
@@ -163,7 +163,7 @@
 - Un contenedor es un paquete. Contiene una aplicación y todo el sw necesario para ejecutarlo.
 - El contenedor se ejecuta directamente por el kernel del host.
 
-## 2. Instalación <a name="instalacion"></a>
+## 2. Instalación
 
 ### 2.1 Docker en los distintos sistemas operativos
 
@@ -211,7 +211,7 @@ sudo usermod -aG docker $USER
 docker run hello-world
 ```
 
-## 3. Empezando con Docker <a name="empezando-con-docker"></a>
+## 3. Empezando con Docker
 
 ### 3.1 Comandos Docker
 - Docker asigna nombres aleatorios a los contenedores (si no le asignados uno antes).
@@ -492,7 +492,7 @@ $ docker container logs --details f4769a9d1f2d
 $ docker container stop f4769a9d1f2d
 ```
 
-## 4. Creación de imágenes <a name="creacion-de-imagenes"></a>
+## 4. Creación de imágenes
 
 ### 4.1 Arquitectura de imágenes
 - Cada imagen está compuesta por una capas.
@@ -658,7 +658,7 @@ $ docker pull <id-usuario>/<nombre-imagen>
 ![Optimizar instrucciones](Images/4.7_buenas_practicas_01.png)
 ![Ordenar argumentos](Images/4.7_buenas_practicas_02.png)
 
-## 5. Manejando volúmenes <a name="manejo-de-volumenes"></a>
+## 5. Manejando volúmenes
 
 ### 5.1 Introducción
 - Permite compartir ficheros entre host-contenedor o contenedor-contenedor.
@@ -696,7 +696,7 @@ $ docker inspect <volúmen>
 ![Volúmenes de datos](Images/5.2_tipos_volumenes_01.png)
 ![Volúmenes de datos](Images/5.2_tipos_volumenes_02.png)
 
-## 6. Aplicaciones multicontenedor - Docker compose <a name="docker-compose"></a>
+## 6. Aplicaciones multicontenedor - Docker compose
 
 ### 6.1 ¿Qué es Docker Compose?
 - Herramienta para definir y correr aplicaciones multi contenedores.
@@ -791,7 +791,7 @@ volumes:
     db_data:
 ```
 
-## 7. Docker Registry <a name="docker-registry"></a>
+## 7. Docker Registry
 
 ### 7.1 Introducción
 - Permite almacenar y distribuir imágenes propias. 
@@ -863,7 +863,7 @@ $ ls -l registro/docker/registry/v2/repositories/
 http://192.168.186.128:8082/
 ```
 
-## 8. Trabajando con Docker en entornos de desarrollo <a name="docker-dev"></a>
+## 8. Trabajando con Docker en entornos de desarrollo
 
 ### 8.1 Microservicios
 - Enfoque para desarrollar aplicaciones con una serie de pequeños servicios, cada uno ejecutándose de forma autónoma y comunicándose entre sí a través de peticiones HTTP a sus APIs.
@@ -1127,7 +1127,7 @@ $ docker-compose ps --services
 - Análisis de vulnerabilidades
     - DockerHub tiene una funcionalidad para tal fin.
 
-## 9. Kubernetes <a name="kubernetes"></a>
+## 9. Kubernetes
 
 ### 9.1 Introducción
 - Kubernete o K8s
